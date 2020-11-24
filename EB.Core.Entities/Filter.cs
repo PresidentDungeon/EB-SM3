@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EB.Core.DomainServices
+namespace EB.Core.Entities
 {
-    public interface ITypeRepository
+    public class Filter
     {
     }
 }
