@@ -13,7 +13,7 @@ namespace EB.Core.Entities
         public double Percentage { get; set; }
         public double IBU { get; set; }
         public double EBC { get; set; }
-        public Type Type  { get; set; }
+        public BeerType Type  { get; set; }
         public Brand Brand { get; set; }
         //public Collection Collection { get; set; }
     }
