@@ -1,7 +1,9 @@
-﻿using EB.Core.Entities;
+﻿using System;
+using EB.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ProductShop.Core.Entities;
 
 namespace EB.Core.DomainServices
 {
@@ -11,7 +13,8 @@ namespace EB.Core.DomainServices
         Beer AddBeer(Beer beer);
 
         //Read Data
-        IEnumerable<Beer> ReadAllBeer(Filter filter);
+        IEnumerable<Beer> ReadBeers();
+        FilterList<Beer> ReadBeersFilterSearch(Filter filter);
         Beer ReadBeerById(int id);
 
         //Update Data
