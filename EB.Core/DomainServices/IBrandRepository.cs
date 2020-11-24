@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EB.Core.DomainService
+namespace EB.Core.DomainServices
 {
-    public interface IAuthenticationHelper
+    public interface IBrandRepository
     {
     }
 }
