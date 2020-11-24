@@ -4,5 +4,22 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EB.Core.Entities\EB.Core.Entities.csproj" />
+    <ProjectReference Include="..\EB.Core\EB.Core.csproj" />
+    <ProjectReference Include="..\EB.Infrastructure.DataInitializer\EB.Infrastructure.DataInitializer.csproj" />
+    <ProjectReference Include="..\EB.Infrastructure.Data\EB.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\EB.Infrastructure.Security\EB.Infrastructure.Security.csproj" />
+  </ItemGroup>
+
 
 </Project>
