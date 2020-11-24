@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EB.Core", "EB.Core\EB.Core.csproj", "{5886BA2F-0B1B-4F4A-8293-E4D623CD9B46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EB.Core", "EB.Core\EB.Core.csproj", "{5886BA2F-0B1B-4F4A-8293-E4D623CD9B46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EB.Core.Entities", "EB.Core.Entities\EB.Core.Entities.csproj", "{53A2A1A7-E2CD-4ADF-B00D-2167B580B82F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EB.Core.Entities", "EB.Core.Entities\EB.Core.Entities.csproj", "{53A2A1A7-E2CD-4ADF-B00D-2167B580B82F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EB.Infrastructure.DataInitializer", "EB.Infrastructure.DataInitializer\EB.Infrastructure.DataInitializer.csproj", "{BF19728E-AFC3-4B13-9108-CBDAA85FCB48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EB.Infrastructure.DataInitializer", "EB.Infrastructure.DataInitializer\EB.Infrastructure.DataInitializer.csproj", "{BF19728E-AFC3-4B13-9108-CBDAA85FCB48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EB.Infrastructure.Security", "EB.Infrastructure.Security\EB.Infrastructure.Security.csproj", "{7079110F-6B92-4C3B-8272-9DEB121D6053}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EB.Infrastructure.Security", "EB.Infrastructure.Security\EB.Infrastructure.Security.csproj", "{7079110F-6B92-4C3B-8272-9DEB121D6053}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EB.Infrastructure.Data", "EB.Infrastructure.Data\EB.Infrastructure.Data.csproj", "{EC7C571E-77C5-4EF5-8455-8CE69D3689AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EB.Infrastructure.Data", "EB.Infrastructure.Data\EB.Infrastructure.Data.csproj", "{EC7C571E-77C5-4EF5-8455-8CE69D3689AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EB.RestAPI", "EB.RestAPI\EB.RestAPI.csproj", "{F710A9E1-B408-44D7-A440-6D51BBAFA366}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EB.RestAPI", "EB.RestAPI\EB.RestAPI.csproj", "{F710A9E1-B408-44D7-A440-6D51BBAFA366}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EB.UnitTests", "EB.UnitTests\EB.UnitTests.csproj", "{6B2E3F20-B04E-444D-AD3D-252A5886DAA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{F710A9E1-B408-44D7-A440-6D51BBAFA366}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F710A9E1-B408-44D7-A440-6D51BBAFA366}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F710A9E1-B408-44D7-A440-6D51BBAFA366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B2E3F20-B04E-444D-AD3D-252A5886DAA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B2E3F20-B04E-444D-AD3D-252A5886DAA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B2E3F20-B04E-444D-AD3D-252A5886DAA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B2E3F20-B04E-444D-AD3D-252A5886DAA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
