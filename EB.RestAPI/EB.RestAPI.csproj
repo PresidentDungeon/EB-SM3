@@ -21,5 +21,9 @@
     <ProjectReference Include="..\EB.Infrastructure.Security\EB.Infrastructure.Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 
 </Project>
