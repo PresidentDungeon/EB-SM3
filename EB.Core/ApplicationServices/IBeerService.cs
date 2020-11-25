@@ -1,4 +1,5 @@
 ﻿using EB.Core.Entities;
+using ProductShop.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,10 +12,10 @@ namespace EB.Core.ApplicationServices
         Beer ValidateBeer(Beer beer);
         Beer CreateBeer(Beer beer);
 
-      //Read
+        //Read
         List<Beer> GetAllBeer();
+        FilterList<Beer> GetBeerFilterSearch(Filter filter);
         Beer GetBeerById(int id);
-        //List<Beer> GetFilteredBeers(Filter filter);
 
       //Update
         Beer UpdateBeer(Beer beer);
