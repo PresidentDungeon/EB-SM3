@@ -52,7 +52,7 @@ namespace EB.Core.ApplicationServices.Impl
             Validator.ValidateCustomer(customer);
             if (GetCustomerById(customer.ID) == null)
             {
-                throw new ArgumentException("No customer with such ID found");
+                throw new InvalidOperationException("No customer with such ID found");
             }
 
             return CustomerRepository.UpdateCustomerInRepo(customer);

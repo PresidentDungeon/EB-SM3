@@ -516,7 +516,7 @@ namespace EB.UnitTests
             };
 
             // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.UpdateUser(user));
+            var ex = Assert.Throws<InvalidOperationException>(() => service.UpdateUser(user));
 
             Assert.Equal("No user with such ID found", ex.Message);
             repoMock.Verify(repo => repo.GetUserByID(It.Is<int>(ID => ID == user.ID)), Times.Once);
@@ -561,7 +561,7 @@ namespace EB.UnitTests
             };
 
             // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.DeleteUser(user.ID));
+            var ex = Assert.Throws<InvalidOperationException>(() => service.DeleteUser(user.ID));
 
             // assert
             Assert.Equal("No user with such ID found", ex.Message);

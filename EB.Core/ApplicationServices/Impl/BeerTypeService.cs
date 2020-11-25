@@ -70,7 +70,7 @@ namespace EB.Core.ApplicationServices.Impl
             Validator.ValidateType(type);
             if (GetTypeById(type.ID) == null)
             {
-                throw new ArgumentException("No type with such ID found");
+                throw new InvalidOperationException("No type with such ID found");
             }
 
             return TypeRepository.UpdateTypeInRepo(type);
@@ -84,7 +84,7 @@ namespace EB.Core.ApplicationServices.Impl
             }
             if (GetTypeById(id) == null)
             {
-                throw new ArgumentException("No type with such ID found");
+                throw new InvalidOperationException("No type with such ID found");
             }
             return TypeRepository.DeleteTypeInRepo(id);
         }

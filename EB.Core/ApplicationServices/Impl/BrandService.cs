@@ -70,7 +70,7 @@ namespace EB.Core.ApplicationServices.Impl
             Validator.ValidateBrand(brand);
             if (GetBrandById(brand.ID) == null)
             {
-                throw new ArgumentException("No brand with such ID found");
+                throw new InvalidOperationException("No brand with such ID found");
             }
 
             return BrandRepository.UpdateBrandInRepo(brand);
@@ -84,7 +84,7 @@ namespace EB.Core.ApplicationServices.Impl
             }
             if (GetBrandById(id) == null)
             {
-                throw new ArgumentException("No brand with such ID found");
+                throw new InvalidOperationException("No brand with such ID found");
             }
             return BrandRepository.DeleteBrandInRepo(id);
         }

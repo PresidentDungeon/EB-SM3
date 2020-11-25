@@ -373,7 +373,7 @@ namespace EB.UnitTests
             };
 
             // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.UpdateBrand(brand));
+            var ex = Assert.Throws<InvalidOperationException>(() => service.UpdateBrand(brand));
 
             Assert.Equal("No brand with such ID found", ex.Message);
             repoMock.Verify(repo => repo.ReadBrandById(It.Is<int>(ID => ID == brand.ID)), Times.Once);
@@ -418,7 +418,7 @@ namespace EB.UnitTests
             };
 
             // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.DeleteBrand(brand.ID));
+            var ex = Assert.Throws<InvalidOperationException>(() => service.DeleteBrand(brand.ID));
 
             // assert
             Assert.Equal("No brand with such ID found", ex.Message);
