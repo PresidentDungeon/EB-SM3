@@ -1,4 +1,5 @@
 ﻿using EB.Core.Entities;
+using ProductShop.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,19 +8,19 @@ namespace EB.Core.ApplicationServices
 {
     public interface IBrandService
     {
-      //Create
+        //Create
         Brand ValidateBrand(Brand brand);
         Brand CreateBrand(Brand brand);
 
-      //Read
-        List<Brand> GetAllBrand();
+        //Read
+        List<Brand> GetAllBrands();
+        FilterList<Brand> GetBrandFilterSearch(Filter filter);
         Brand GetBrandById(int id);
-        //List<Brand> GetFilteredBrands(Filter filter);
 
-      //Update
+        //Update
         Brand UpdateBrand(Brand brand);
 
-      //Delete
+        //Delete
         Brand DeleteBrand(int id);
     }
 }
