@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EB.Core.Entities.Security;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,6 +15,7 @@ namespace EB.Core.Entities
         public string StreetName { get; set; }
         public int PostalCode { get; set; }
         public string CityName { get; set; }
+        public User User { get; set; }
         public Order[] Orders { get; set; }
     }
 }

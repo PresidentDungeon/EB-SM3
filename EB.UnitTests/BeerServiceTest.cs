@@ -200,7 +200,7 @@ namespace EB.UnitTests
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void GetCompanyById_InvalidId_ExpectArgumentException(int ID)
+        public void GetBeerById_InvalidId_ExpectArgumentException(int ID)
         {
             // arrange
             BeerService service = new BeerService(repoMock.Object, validatorMock.Object);
@@ -216,14 +216,14 @@ namespace EB.UnitTests
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(2)]
-        public void GetAllCompanies(int companyCount)
+        public void GetAllBeers(int beerCount)
         {
             // arrange
             Beer beer1 = new Beer{ ID = 1 };
             Beer beer2 = new Beer{ ID = 2 };
             List<Beer> beers = new List<Beer>() { beer1, beer2 };
 
-            var expected = beers.GetRange(0, companyCount);
+            var expected = beers.GetRange(0, beerCount);
             foreach (var beer in expected)
             {
                 beerDatabase.Add(beer.ID, beer);
