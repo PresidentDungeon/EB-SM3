@@ -278,7 +278,7 @@ namespace EB.UnitTests
             };
 
             // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.UpdateCustomer(customer));
+            var ex = Assert.Throws<InvalidOperationException>(() => service.UpdateCustomer(customer));
 
             Assert.Equal("No customer with such ID found", ex.Message);
             repoMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(ID => ID == customer.ID)), Times.Once);

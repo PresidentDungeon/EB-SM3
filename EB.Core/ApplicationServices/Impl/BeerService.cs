@@ -12,11 +12,15 @@ namespace EB.Core.ApplicationServices.Impl
     public class BeerService : IBeerService
     {
         private IBeerRepository BeerRepository;
+        private IBrandRepository BrandRepository;
+        private IBeerTypeRepository TypeRepository;
         private IValidator Validator;
 
-        public BeerService(IBeerRepository beerRepository, IValidator validator)
+        public BeerService(IBeerRepository beerRepository, IBrandRepository brandRepository, IBeerTypeRepository typeRepository, IValidator validator)
         {
             this.BeerRepository = beerRepository ?? throw new NullReferenceException("Repository can't be null");
+            this.BrandRepository = brandRepository ?? throw new NullReferenceException("Repository can't be null");
+            this.TypeRepository = typeRepository ?? throw new NullReferenceException("Repository can't be null");
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
         }
 
@@ -31,6 +35,15 @@ namespace EB.Core.ApplicationServices.Impl
             if (beer != null)
             {
                 Validator.ValidateBeer(beer);
+
+                if (TypeRepository.ReadTypeById(beer.Type.ID) == null)
+                {
+                    throw new InvalidOperationException("No type with such ID found");
+                }
+                if (BrandRepository.ReadBrandById(beer.Brand.ID) == null)
+                {
+                    throw new InvalidOperationException("No brand with such ID found");
+                }
                 return BeerRepository.AddBeer(beer);
             }
             return null;
@@ -70,7 +83,15 @@ namespace EB.Core.ApplicationServices.Impl
             Validator.ValidateBeer(beer);
             if (GetBeerById(beer.ID) == null)
             {
-                throw new ArgumentException("No beer with such ID found");
+                throw new InvalidOperationException("No beer with such ID found");
+            }
+            if (TypeRepository.ReadTypeById(beer.Type.ID) == null)
+            {
+                throw new InvalidOperationException("No type with such ID found");
+            }
+            if (BrandRepository.ReadBrandById(beer.Brand.ID) == null)
+            {
+                throw new InvalidOperationException("No brand with such ID found");
             }
 
             return BeerRepository.UpdateBeerInRepo(beer);
@@ -84,7 +105,7 @@ namespace EB.Core.ApplicationServices.Impl
             }
             if (GetBeerById(id) == null)
             {
-                throw new ArgumentException("No beer with such ID found");
+                throw new InvalidOperationException("No beer with such ID found");
             }
             return BeerRepository.DeleteBeerInRepo(id);
         }

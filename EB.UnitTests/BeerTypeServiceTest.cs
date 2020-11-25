@@ -372,7 +372,7 @@ namespace EB.UnitTests
             };
 
             // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.UpdateType(type));
+            var ex = Assert.Throws<InvalidOperationException>(() => service.UpdateType(type));
 
             Assert.Equal("No type with such ID found", ex.Message);
             repoMock.Verify(repo => repo.ReadTypeById(It.Is<int>(ID => ID == type.ID)), Times.Once);
@@ -417,7 +417,7 @@ namespace EB.UnitTests
             };
 
             // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.DeleteType(type.ID));
+            var ex = Assert.Throws<InvalidOperationException>(() => service.DeleteType(type.ID));
 
             // assert
             Assert.Equal("No type with such ID found", ex.Message);
