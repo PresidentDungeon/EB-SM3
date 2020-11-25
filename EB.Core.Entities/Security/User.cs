@@ -12,5 +12,6 @@ namespace EB.Core.Entities.Security
         public byte[] Salt { get; set; }
         public string UserRole { get; set; }
         public Customer Customer { get; set; }
+
     }
 }

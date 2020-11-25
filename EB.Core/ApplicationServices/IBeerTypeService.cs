@@ -1,4 +1,5 @@
 ﻿using EB.Core.Entities;
+using ProductShop.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,19 +8,19 @@ namespace EB.Core.ApplicationServices
 {
     public interface IBeerTypeService
     {
-      //Create
-        BeerType ValidateBeerType(BeerType type);
-        BeerType CreateBeerType(BeerType type);
+       //Create
+        BeerType ValidateType(BeerType type);
+        BeerType CreateType(BeerType type);
 
-      //Read
-        List<BeerType> GetAllBeerType();
-        BeerType GetBeerTypeById(int id);
-        //List<BeerType> GetFilteredBeerTypes(Filter filter);
+        //Read
+        List<BeerType> GetAllTypes();
+        FilterList<BeerType> GetTypesFilterSearch(Filter filter);
+        BeerType GetTypeById(int id);
 
-      //Update
-        BeerType UpdateBeerType(BeerType type);
+        //Update
+        BeerType UpdateType(BeerType type);
 
-      //Delete
-        BeerType DeleteBeerType(int id);
+        //Delete
+        BeerType DeleteType(int id);
     }
 }
