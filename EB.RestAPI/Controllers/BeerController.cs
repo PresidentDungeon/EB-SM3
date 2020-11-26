@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EB.RestAPI.Controllers
 {
@@ -22,15 +21,21 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Create
-        // POST api/<BeerController>
         [HttpPost]
         [ProducesResponseType(typeof(Beer), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
-        public ActionResult<Beer> Post([FromBody] Beer beer)
+        public ActionResult<Beer> CreateBeer([FromBody] Beer beer)
         {
             try
             {
-                return BeerService.CreateBeer(beer);
+                Beer addedBeer = BeerService.CreateBeer(beer);
+
+                if (addedBeer == null)
+                {
+                    return StatusCode(500, "Error saving product to Database");
+                }
+
+                return Created("", addedBeer);
             }
             catch (Exception ex)
             {
@@ -40,7 +45,6 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Read
-        // GET: api/<BeerController>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Beer>), 200)]
         [ProducesResponseType(404)] [ProducesResponseType(500)]
@@ -50,13 +54,16 @@ namespace EB.RestAPI.Controllers
             {
                 return Ok(BeerService.GetBeerFilterSearch(filter));
             }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, "Couldn't load beers. Please try again later.");
             }
         }
 
-        // GET api/<BeerController>/5
         [HttpGet("{ID}")]
         [ProducesResponseType(typeof(Beer), 200)]
         [ProducesResponseType(404)] [ProducesResponseType(500)]
@@ -79,34 +86,51 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Update
-        // PUT api/<BeerController>/5
         [HttpPut("{ID}")]
         [ProducesResponseType(typeof(Beer), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<Beer> Put(int id, [FromBody] Beer beer)
+        public ActionResult<Beer> UpdateByID(int id, [FromBody] Beer beer)
         {
-            if (id < 1 || id != beer.ID)
+            try
             {
-                return BadRequest("Didn't find a matching ID.");
-            }
+                if (id < 1 || id != beer.ID)
+                {
+                    return BadRequest("Didn't find a matching ID.");
+                }
 
-            return Ok(BeerService.UpdateBeer(beer));
+                Beer updatedBeer = BeerService.UpdateBeer(beer);
+                return (updatedBeer != null) ? Accepted(beer) : StatusCode(500, $"Server error updating beer with Id: {id}");
+            }
+            catch(InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         #endregion
 
         #region Delete
-        // DELETE api/<BeerController>/5
         [HttpDelete("{ID}")]
         [ProducesResponseType(typeof(Beer), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<Beer> Delete(int id)
+        public ActionResult<Beer> DeleteByID(int id)
         {
-            var beer = BeerService.DeleteBeer(id);
-            if (beer == null)
+            try
             {
-                return StatusCode(404, "Couldn't find beer with ID: " + id);
+                Beer beer = BeerService.DeleteBeer(id);
+                return (beer != null) ? Accepted(beer) : StatusCode(500, $"Server error deleting beer with Id: {id}");
             }
-            return Ok($"Beer with ID: {id} has been deleted.");
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error deleting product with Id: {id}");
+            }
         }
         #endregion
     }

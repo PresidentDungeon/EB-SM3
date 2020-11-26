@@ -6,8 +6,6 @@ using EB.Core.ApplicationServices;
 using EB.Core.Entities.Security;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace EB.RestAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -25,6 +23,8 @@ namespace EB.RestAPI.Controllers
 
         #region Login
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
         public IActionResult Login([FromBody] LoginInputModel model)
         {
             try
