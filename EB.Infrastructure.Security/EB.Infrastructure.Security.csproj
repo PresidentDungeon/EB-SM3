@@ -9,4 +9,9 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EB.Core.Entities\EB.Core.Entities.csproj" />
+    <ProjectReference Include="..\EB.Core\EB.Core.csproj" />
+  </ItemGroup>
+
 </Project>
