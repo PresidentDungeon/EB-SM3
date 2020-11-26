@@ -3,7 +3,6 @@ using EB.Core.Entities.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace EB.Core.ApplicationServices.Impl
 {

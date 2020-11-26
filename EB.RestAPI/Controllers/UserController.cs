@@ -1,9 +1,8 @@
 ﻿using System;
+using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities.Security;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EB.RestAPI.Controllers
 {
@@ -21,15 +20,21 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Create
-        // POST api/<BeerController>
         [HttpPost]
         [ProducesResponseType(typeof(User), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
-        public ActionResult<User> Post([FromBody] User user)
+        public ActionResult<User> CreateUser([FromBody] User user)
         {
             try
             {
-                return UserService.AddUser(user);
+                User addedUser = UserService.AddUser(user);
+
+                if (addedUser == null)
+                {
+                    return StatusCode(500, "Error saving user info to Database");
+                }
+
+                return Created("", addedUser);
             }
             catch (Exception ex)
             {
@@ -39,7 +44,6 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Read
-        // GET api/<BeerController>/5
         [HttpGet("{ID}")]
         [ProducesResponseType(typeof(User), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
@@ -62,34 +66,51 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Update
-        // PUT api/<BeerController>/5
         [HttpPut("{ID}")]
         [ProducesResponseType(typeof(User), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<User> Put(int id, [FromBody] User user)
+        public ActionResult<User> UpdateByID(int id, [FromBody] User user)
         {
-            if (id < 1 || id != user.ID)
+            try
             {
-                return BadRequest("Didn't find a matching ID.");
-            }
+                if (id < 1 || id != user.ID)
+                {
+                    return BadRequest("Didn't find a matching ID.");
+                }
 
-            return Ok(UserService.UpdateUser(user));
+                User updatedUser = UserService.UpdateUser(user);
+                return (updatedUser != null) ? Accepted(updatedUser) : StatusCode(500, $"Server error updating user with Id: {id}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         #endregion
 
         #region Delete
-        // DELETE api/<BeerController>/5
         [HttpDelete("{ID}")]
         [ProducesResponseType(typeof(User), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<User> Delete(int id)
+        public ActionResult<User> DeleteByID(int id)
         {
-            var user = UserService.DeleteUser(id);
-            if (user == null)
+            try
             {
-                return StatusCode(404, "Couldn't find User with ID: " + id);
+                User user = UserService.DeleteUser(id);
+                return (user != null) ? Accepted(user) : StatusCode(500, $"Server error deleting user with Id: {id}");
             }
-            return Ok($"User with ID: {id} has been deleted.");
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error deleting brand with Id: {id}");
+            }
         }
         #endregion
     }

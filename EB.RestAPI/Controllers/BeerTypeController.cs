@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EB.RestAPI.Controllers
 {
@@ -22,15 +21,21 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Create
-        // POST api/<BeerTypeController>
         [HttpPost]
         [ProducesResponseType(typeof(BeerType), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
-        public ActionResult<BeerType> Post([FromBody] BeerType beerType)
+        public ActionResult<BeerType> CreateBeerType([FromBody] BeerType beerType)
         {
             try
             {
-                return BeerTypeService.CreateType(beerType);
+                BeerType addedType = BeerTypeService.CreateType(beerType);
+
+                if (addedType == null)
+                {
+                    return StatusCode(500, "Error saving beer type to Database");
+                }
+
+                return Created("", beerType);
             }
             catch (Exception ex)
             {
@@ -40,7 +45,6 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Read
-        // GET: api/<BeerTypeController>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<BeerType>), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
@@ -50,13 +54,16 @@ namespace EB.RestAPI.Controllers
             {
                 return Ok(BeerTypeService.GetTypesFilterSearch(filter));
             }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, "Couldn't load beertypes. Please try again later.");
             }
         }
 
-        // GET api/<BeerTypeController>/5
         [HttpGet("{ID}")]
         [ProducesResponseType(typeof(BeerType), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
@@ -64,8 +71,12 @@ namespace EB.RestAPI.Controllers
         {
             try
             {
-                
-                    return Ok(BeerTypeService.GetTypeById(ID));
+                BeerType beerType = BeerTypeService.GetTypeById(ID);
+                if (beerType != null)
+                {
+                    return Ok(beerType);
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -79,30 +90,48 @@ namespace EB.RestAPI.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(BeerType), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<BeerType> Put(int id, [FromBody] BeerType type)
+        public ActionResult<BeerType> UpdateByID(int id, [FromBody] BeerType type)
         {
-            if (id < 1 || id != type.ID)
+            try
             {
-                return BadRequest("Didn't find a matching ID.");
-            }
+                if (id < 1 || id != type.ID)
+                {
+                    return BadRequest("Didn't find a matching ID.");
+                }
 
-            return Ok(BeerTypeService.UpdateType(type));
+                BeerType updatedBeerType = BeerTypeService.UpdateType(type);
+                return (updatedBeerType != null) ? Accepted(updatedBeerType) : StatusCode(500, $"Server error updating beer type with Id: {id}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         #endregion
 
         #region Delete
-        // DELETE api/<BeerTypeController>/5
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Beer), 202)]
+        [ProducesResponseType(typeof(BeerType), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<BeerType> Delete(int id)
+        public ActionResult<BeerType> DeleteByID(int id)
         {
-            var type = BeerTypeService.DeleteType(id);
-            if (type == null)
+            try
             {
-                return StatusCode(404, "Couldn't find type with ID: " + id);
+                BeerType beerType = BeerTypeService.DeleteType(id);
+                return (beerType != null) ? Accepted(beerType) : StatusCode(500, $"Server error deleting beer type with Id: {id}");
             }
-            return Ok($"Type with ID: {id} has been deleted.");
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error deleting beer type with Id: {id}");
+            }
         }
         #endregion
     }
