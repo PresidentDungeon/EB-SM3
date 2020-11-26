@@ -112,7 +112,7 @@ namespace EB.Core.ApplicationServices.Impl
             Validator.ValidateUser(user);
             if (GetUserByID(user.ID) == null)
             {
-                throw new ArgumentException("No user with such ID found");
+                throw new InvalidOperationException("No user with such ID found");
             }
 
             return UserRepository.UpdateUser(user);
@@ -126,7 +126,7 @@ namespace EB.Core.ApplicationServices.Impl
             }
             if (GetUserByID(ID) == null)
             {
-                throw new ArgumentException("No user with such ID found");
+                throw new InvalidOperationException("No user with such ID found");
             }
             return UserRepository.DeleteUser(ID);
         }
