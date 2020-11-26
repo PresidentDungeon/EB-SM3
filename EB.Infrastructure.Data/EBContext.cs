@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EB.Core.Entities;
+using EB.Core.Entities.Security;
+using Microsoft.EntityFrameworkCore;
 
 namespace EB.Infrastructure.Data
 {
@@ -11,9 +10,23 @@ namespace EB.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<Beer>()
+                .HasOne(b => b.Type)
+                .WithMany(bt => bt.Beers).OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Beer>()
+                .HasOne(b => b.Brand)
+                .WithMany(bb => bb.Beers).OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Customer>()
+                .HasOne(c => c.User)
+                .WithOne(u => u.Customer).OnDelete(DeleteBehavior.Cascade);
         }
 
-        public DbSet<Type> Types { get; set; }
+        public DbSet<Beer> Beers { get; set; }
+        public DbSet<BeerType> Types { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Customer> Costumers { get; set; }
     }
 }
