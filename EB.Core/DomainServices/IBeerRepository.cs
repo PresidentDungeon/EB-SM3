@@ -1,6 +1,5 @@
 ﻿using System;
 using EB.Core.Entities;
-using System;
 using System.Collections.Generic;
 using System.Text;
 using ProductShop.Core.Entities;
