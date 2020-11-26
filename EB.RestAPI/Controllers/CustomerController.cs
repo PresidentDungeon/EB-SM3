@@ -6,8 +6,6 @@ using EB.Core.ApplicationServices;
 using EB.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace EB.RestAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -24,15 +22,21 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Create
-        // POST api/<CustomerController>
         [HttpPost]
         [ProducesResponseType(typeof(Customer), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
-        public ActionResult<Customer> Post([FromBody] Customer customer)
+        public ActionResult<Customer> CreateCustomer([FromBody] Customer customer)
         {
             try
             {
-                return CustomerService.CreateCustomer(customer);
+                Customer addedCustomer = CustomerService.CreateCustomer(customer);
+
+                if (addedCustomer == null)
+                {
+                    return StatusCode(500, "Error saving customer info to Database");
+                }
+
+                return Created("", addedCustomer);
             }
             catch (Exception ex)
             {
@@ -42,7 +46,6 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Read
-        // GET api/<CustomerController>/5
         [HttpGet("{ID}")]
         [ProducesResponseType(typeof(Customer), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
@@ -50,28 +53,40 @@ namespace EB.RestAPI.Controllers
         {
             try
             {
-                return Ok(CustomerService.GetCustomerById(ID));
+                Customer customer = CustomerService.GetCustomerById(ID);
+                if (customer != null)
+                {
+                    return Ok(customer);
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error loading Customer with ID: {ID}\nPlease try again later.");
+                return StatusCode(500, $"Error loading customer with ID: {ID}\nPlease try again later.");
             }
         }
         #endregion
 
         #region Update
-        // PUT api/<CustomerController>/5
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Customer), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<Customer> Put(int id, [FromBody] Customer customer)
+        public ActionResult<Customer> UpdateByID(int id, [FromBody] Customer customer)
         {
-            if (id < 1 || id != customer.ID)
+            try
             {
-                return BadRequest("Didn't find a matching ID.");
-            }
+                if (id < 1 || id != customer.ID)
+                {
+                    return BadRequest("Didn't find a matching ID.");
+                }
 
-            return Ok(CustomerService.UpdateCustomer(customer));
+                Customer updatedCustomer = CustomerService.UpdateCustomer(customer);
+                return (updatedCustomer != null) ? Accepted(updatedCustomer) : StatusCode(500, $"Server error updating customer with Id: {id}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         #endregion
 

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EB.RestAPI.Controllers
 {
@@ -24,15 +23,21 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Create
-        // POST api/<BrandController>
         [HttpPost]
         [ProducesResponseType(typeof(Brand), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
-        public ActionResult<Brand> Post([FromBody] Brand brand)
+        public ActionResult<Brand> CreateBrand([FromBody] Brand brand)
         {
             try
             {
-                return BrandService.CreateBrand(brand);
+                Brand addedBrand = BrandService.CreateBrand(brand);
+
+                if (addedBrand == null)
+                {
+                    return StatusCode(500, "Error saving brand to Database");
+                }
+
+                return Created("", addedBrand);
             }
             catch (Exception ex)
             {
@@ -42,7 +47,6 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Read
-        // GET: api/<BrandController>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Brand>), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
@@ -52,13 +56,16 @@ namespace EB.RestAPI.Controllers
             {
                 return Ok(BrandService.GetBrandFilterSearch(filter));
             }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, "Couldn't load brand. Please try again later.");
             }
         }
 
-        // GET api/<BrandController>/5
         [HttpGet("{ID}")]
         [ProducesResponseType(typeof(Brand), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
@@ -66,8 +73,12 @@ namespace EB.RestAPI.Controllers
         {
             try
             {
-
-                return Ok(BrandService.GetBrandById(ID));
+                Brand brand = BrandService.GetBrandById(ID);
+                if (brand != null)
+                {
+                    return Ok(brand);
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -77,34 +88,51 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Update
-        // PUT api/<BrandController>/5
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Brand), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<Brand> Put(int id, [FromBody] Brand brand)
+        public ActionResult<Brand> UpdateByID(int id, [FromBody] Brand brand)
         {
-            if (id < 1 || id != brand.ID)
+            try
             {
-                return BadRequest("Didn't find a matching ID.");
-            }
+                if (id < 1 || id != brand.ID)
+                {
+                    return BadRequest("Didn't find a matching ID.");
+                }
 
-            return Ok(BrandService.UpdateBrand(brand));
+                Brand updatedBrand = BrandService.UpdateBrand(brand);
+                return (updatedBrand != null) ? Accepted(updatedBrand) : StatusCode(500, $"Server error updating brand with Id: {id}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         #endregion
 
         #region Delete
-        // DELETE api/<BrandController>/5
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Brand), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
-        public ActionResult<Brand> Delete(int id)
+        public ActionResult<Brand> DeleteByID(int id)
         {
-            var type = BrandService.DeleteBrand(id);
-            if (type == null)
+            try
             {
-                return StatusCode(404, "Couldn't find brand with ID: " + id);
+                Brand brand = BrandService.DeleteBrand(id);
+                return (brand != null) ? Accepted(brand) : StatusCode(500, $"Server error deleting brand with Id: {id}");
             }
-            return Ok($"Brand with ID: {id} has been deleted.");
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error deleting brand with Id: {id}");
+            }
         }
         #endregion
     }
