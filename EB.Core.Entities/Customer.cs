@@ -16,6 +16,6 @@ namespace EB.Core.Entities
         public int PostalCode { get; set; }
         public string CityName { get; set; }
         public User User { get; set; }
-        public Order[] Orders { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }
