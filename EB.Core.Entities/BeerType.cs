@@ -8,6 +8,6 @@ namespace EB.Core.Entities
     {
         public int ID { get; set; }
         public string TypeName { get; set; }
-        public Beer[] Beers { get; set; }
+        public List<Beer> Beers { get; set; }
     }
 }

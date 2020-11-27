@@ -20,7 +20,7 @@ namespace EB.Infrastructure.Data
 
             modelBuilder.Entity<Customer>()
                 .HasOne(c => c.User)
-                .WithOne(u => u.Customer).OnDelete(DeleteBehavior.Cascade);
+                .WithOne(u => u.Customer).HasForeignKey<User>(c => c.ID).OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<Beer> Beers { get; set; }

@@ -12,7 +12,7 @@ namespace EB.Core.ApplicationServices.Validators
             {
                 throw new ArgumentException("Beer instance can't be null");
             }
-            if (beer.ID <= 0)
+            if (beer.ID < 0)
             {
                 throw new ArgumentException("Invalid ID");
             }
@@ -56,7 +56,7 @@ namespace EB.Core.ApplicationServices.Validators
             {
                 throw new ArgumentException("Brand instance can't be null");
             }
-            if (brand.ID <= 0)
+            if (brand.ID < 0)
             {
                 throw new ArgumentException("Invalid ID");
             }
@@ -77,7 +77,7 @@ namespace EB.Core.ApplicationServices.Validators
             {
                 throw new ArgumentException("Customer instance can't be null");
             }
-            if (customer.ID <= 0)
+            if (customer.ID < 0)
             {
                 throw new ArgumentException("Invalid ID");
             }
@@ -113,7 +113,7 @@ namespace EB.Core.ApplicationServices.Validators
             {
                 throw new ArgumentException("Type instance can't be null");
             }
-            if (type.ID <= 0)
+            if (type.ID < 0)
             {
                 throw new ArgumentException("Invalid ID");
             }
