@@ -143,9 +143,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1)]
-        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1)]
-        public void AddBeer_ValidBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC)
+        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png")]
+        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, "x.jpg")]
+        public void AddBeer_ValidBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL)
         {
             // arrange
 
@@ -164,6 +164,7 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                ImageURL = imageURL,
                 Type = type,
                 Brand = brand
             };
@@ -182,9 +183,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, "Name is null exception")]
-        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, "Description is null exception")]
-        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, string errorExpected)
+        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png", "Name is null exception")]
+        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, "x.png", "Description is null exception")]
+        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL, string errorExpected)
         {
             // arrange
             BeerType type = new BeerType { ID = 1 };
@@ -202,6 +203,7 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                ImageURL = imageURL,
                 Type = type,
                 Brand = brand
             };
@@ -239,6 +241,7 @@ namespace EB.UnitTests
                 Percentage = 4.8,
                 IBU = 3,
                 EBC = 15,
+                ImageURL = "x.png",
                 Type = type,
                 Brand = brand
             };
@@ -275,6 +278,7 @@ namespace EB.UnitTests
                 Percentage = 4.8,
                 IBU = 3,
                 EBC = 15,
+                ImageURL = "x.png",
                 Type = type,
                 Brand = brand
             };
@@ -439,9 +443,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1)]
-        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1)]
-        public void UpdateBeer_ValidExistingBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC)
+        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png")]
+        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, "x.jpg")]
+        public void UpdateBeer_ValidExistingBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL)
         {
             // arrange
             BeerType type = new BeerType { ID = 1 };
@@ -459,8 +463,9 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                ImageURL = imageURL,
                 Type = type,
-                Brand =brand
+                Brand = brand
             };
 
             beerDatabase.Add(beer.ID, beer);
@@ -482,9 +487,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, "Name is null exception")]
-        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, "Description is null exception")]
-        public void UpdateBeer_InvalidBeer_ExpectArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, string errorExpected)
+        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png", "Name is null exception")]
+        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, "x.jpg", "Description is null exception")]
+        public void UpdateBeer_InvalidBeer_ExpectArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL,  string errorExpected)
         {
             // arrange
             BeerType type = new BeerType { ID = 1 };
@@ -502,6 +507,7 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                ImageURL = imageURL,
                 Type = type,
                 Brand = brand
             };
@@ -556,7 +562,10 @@ namespace EB.UnitTests
                 Price = 56,
                 Percentage = 6.6,
                 IBU = 2.2,
-                EBC = 1.1
+                EBC = 1.1,
+                ImageURL = "x.png",
+                Type = type,
+                Brand = brand
             };
 
             // act + assert
@@ -588,6 +597,7 @@ namespace EB.UnitTests
                 Percentage = 6.6,
                 IBU = 2.2,
                 EBC = 1.1,
+                ImageURL = "x.png",
                 Type = type,
                 Brand = brand
             };
@@ -625,6 +635,7 @@ namespace EB.UnitTests
                 Percentage = 6.6,
                 IBU = 2.2,
                 EBC = 1.1,
+                ImageURL = "x.png",
                 Type = type,
                 Brand = brand
             };
@@ -647,6 +658,12 @@ namespace EB.UnitTests
         [Fact]
         public void RemoveBeer_ValidExistingBeer()
         {
+            BeerType type = new BeerType { ID = 1 };
+            Brand brand = new Brand { ID = 2 };
+
+            typeDatabase.Add(type.ID, type);
+            brandDatabase.Add(brand.ID, brand);
+
             // arrange
             Beer beer = new Beer()
             {
@@ -656,7 +673,10 @@ namespace EB.UnitTests
                 Price = 56,
                 Percentage = 6.6,
                 IBU = 2.2,
-                EBC = 1.1
+                EBC = 1.1,
+                ImageURL = "x.png",
+                Type = type,
+                Brand = brand
             };
 
             beerDatabase.Add(beer.ID, beer);
@@ -687,7 +707,8 @@ namespace EB.UnitTests
                 Price = 56,
                 Percentage = 6.6,
                 IBU = 2.2,
-                EBC = 1.1
+                EBC = 1.1,
+                ImageURL = "x.png"
             };
 
             // act + assert

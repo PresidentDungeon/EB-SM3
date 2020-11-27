@@ -33,22 +33,22 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(0, "Beer", "Fra 1884!", 65, 50, 100, 14, "Invalid ID")]                         // invalid id: 0
-        [InlineData(-1, "Beer", "Fra 1884!", 65, 50, 100, 14, "Invalid ID")]                        // invalid id: -1
-        [InlineData(1, null, "Fra 1884!", 65, 50, 100, 14, "Name can not be empty")]                // invalid name: null
-        [InlineData(1, "", "Fra 1884!", 65, 50, 100, 14, "Name can not be empty")]                  // invalid name: ""
-        [InlineData(1, "Beer", null, 65, 50, 100, 14, "Description can not be empty")]              // invalid description: null
-        [InlineData(1, "Beer", "", 65, 50, 100, 14, "Description can not be empty")]                // invalid description: ""
-        [InlineData(1, "Beer", "Fra 1884!", 0, 50, 100, 14, "Price must be higher than zero")]      // invalid price: 0
-        [InlineData(1, "Beer", "Fra 1884!", -1, 50, 100, 14, "Price must be higher than zero")]     // invalid price: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, -1, 100, 14, "EBC must be betweeen 0-80")]          // invalid EBC: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, 81, 100, 14, "EBC must be betweeen 0-80")]          // invalid EBC: 81
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, -1, 14, "IBU must be betweeen 0-120")]          // invalid IBU: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 121, 14, "IBU must be betweeen 0-120")]         // invalid IBU: 121
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, -1, "Percentage must be between 0-100")]   // invalid percentage: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 101, "Percentage must be between 0-100")]  // invalid percentage: 101
+        [InlineData(-1, "Beer", "Fra 1884!", 65, 50, 100, 14, "image.png", "Invalid ID")]                        // invalid id: -1
+        [InlineData(int.MinValue, "Beer", "Fra 1884!", 65, 50, 100, 14, "image.png", "Invalid ID")]              // invalid id: -2147483648
+        [InlineData(1, null, "Fra 1884!", 65, 50, 100, 14, "image.png", "Name can not be empty")]                // invalid name: null
+        [InlineData(1, "", "Fra 1884!", 65, 50, 100, 14, "image.png", "Name can not be empty")]                  // invalid name: ""
+        [InlineData(1, "Beer", null, 65, 50, 100, 14, "image.png", "Description can not be empty")]              // invalid description: null
+        [InlineData(1, "Beer", "", 65, 50, 100, 14, "image.png", "Description can not be empty")]                // invalid description: ""
+        [InlineData(1, "Beer", "Fra 1884!", 0, 50, 100, 14, "image.png", "Price must be higher than zero")]      // invalid price: 0
+        [InlineData(1, "Beer", "Fra 1884!", -1, 50, 100, 14, "image.png", "Price must be higher than zero")]     // invalid price: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, -1, 100, 14, "image.png", "EBC must be betweeen 0-80")]          // invalid EBC: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, 81, 100, 14, "image.png", "EBC must be betweeen 0-80")]          // invalid EBC: 81
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, -1, 14, "image.png", "IBU must be betweeen 0-120")]          // invalid IBU: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 121, 14, "image.png", "IBU must be betweeen 0-120")]         // invalid IBU: 121
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, -1, "image.png", "Percentage must be between 0-100")]   // invalid percentage: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 101, "image.png", "Percentage must be between 0-100")]  // invalid percentage: 101
 
-        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double EBC, double IBU, double percentage, string expectedErrorMsg)
+        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double EBC, double IBU, double percentage, string imageURL, string expectedErrorMsg)
         {
             // arrange
             Brand brand = new Brand { ID = 1 };
@@ -63,6 +63,7 @@ namespace EB.UnitTests
                 EBC = EBC,
                 IBU = IBU,
                 Percentage = percentage,
+                ImageURL = imageURL,
                 Brand = brand,
                 Type = type
             };
@@ -91,6 +92,7 @@ namespace EB.UnitTests
                 EBC = 60,
                 IBU = 40,
                 Percentage = 6.5,
+                ImageURL = "image.png",
                 Brand = brand,
                 Type = type
             };
@@ -119,6 +121,7 @@ namespace EB.UnitTests
                 EBC = 60,
                 IBU = 40,
                 Percentage = 6.5,
+                ImageURL = "image.png",
                 Brand = brand,
                 Type = type
             };
@@ -132,9 +135,10 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 14)]
-        [InlineData(2, "Beer2", "Fra 1882!", 200, 20, 35, 4)]
-        public void AddBeer_ValidBeer(int id, string name, string description, double price, double EBC, double IBU, double percentage)
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 14, "image.png")]
+        [InlineData(2, "Beer2", "Fra 1882!", 200, 20, 35, 4, "")]
+        [InlineData(2, "Beer2", "Fra 1882!", 200, 20, 35, 4, null)]
+        public void AddBeer_ValidBeer(int id, string name, string description, double price, double EBC, double IBU, double percentage, string ImageURL)
         {
             // arrange
             Brand brand = new Brand { ID = 1 };
@@ -149,6 +153,7 @@ namespace EB.UnitTests
                 EBC = EBC,
                 IBU = IBU,
                 Percentage = percentage,
+                ImageURL = ImageURL,
                 Brand = brand,
                 Type = type
             };
@@ -173,8 +178,8 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(0, "IPA", "Invalid ID")]                // invalid id: 0
-        [InlineData(-1, "IPA", "Invalid ID")]               // invalid id: 0              
+        [InlineData(-1, "IPA", "Invalid ID")]               // invalid id: 0
+        [InlineData(int.MinValue, "IPA", "Invalid ID")]     // invalid id: -2147483648             
         [InlineData(1, null, "Name can not be empty")]      // invalid name: null              
         [InlineData(1, "", "Name can not be empty")]        // invalid name: empty         
 
@@ -219,10 +224,10 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(0, "Ølværket", "Invalid ID")]                // invalid id: 0
-        [InlineData(-1, "Ølværket", "Invalid ID")]               // invalid id: 0              
-        [InlineData(1, null, "Name can not be empty")]      // invalid name: null              
-        [InlineData(1, "", "Name can not be empty")]        // invalid name: empty         
+        [InlineData(-1, "Ølværket", "Invalid ID")]              // invalid id: -1
+        [InlineData(int.MinValue, "Ølværket", "Invalid ID")]    // invalid id: -2147483648             
+        [InlineData(1, null, "Name can not be empty")]          // invalid name: null              
+        [InlineData(1, "", "Name can not be empty")]            // invalid name: empty         
 
         public void AddBrand_InvalidBrand_ExceptArgumentException(int id, string name, string expectedErrorMsg)
         {
@@ -265,8 +270,8 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(0, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Invalid ID")]                            // invalid id: 0
-        [InlineData(-1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Invalid ID")]                           // invalid id: -1
+        [InlineData(-1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Invalid ID")]                            // invalid id: -1
+        [InlineData(int.MinValue, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Invalid ID")]                 // invalid id: -2147483648
         [InlineData(1, null, "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Firstname can not be empty")]                 // invalid firstname: null
         [InlineData(1, "", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Firstname can not be empty")]                   // invalid firstname: ""
         [InlineData(1, "Karsten", null, "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Lastname can not be empty")]                  // invalid lastname: null

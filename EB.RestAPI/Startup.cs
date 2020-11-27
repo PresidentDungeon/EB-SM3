@@ -1,6 +1,11 @@
 using System;
+using EB.Core.ApplicationServices;
+using EB.Core.ApplicationServices.Impl;
+using EB.Core.ApplicationServices.Validators;
+using EB.Core.DomainServices;
 using EB.Infrastructure.Data;
 using EB.Infrastructure.DataInitializer;
+using EB.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +35,18 @@ namespace EB.RestAPI
             Random rand = new Random();
             rand.NextBytes(secretBytes);
 
-            services.AddScoped<InitStaticData>();
+            services.AddScoped<IBeerService, BeerService>();
+            services.AddScoped<IBeerRepository, BeerRepository>();
+
+            services.AddScoped<IBeerTypeService, BeerTypeService>();
+            services.AddScoped<IBeerTypeRepository, BeerTypeRepository>();
+
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
+
+            services.AddSingleton<IAuthenticationHelper>(new AuthenticationHelper(secretBytes));
+            services.AddScoped<IInitStaticData, InitStaticData>();
+            services.AddScoped<IValidator, BEValidator>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
             {
@@ -98,8 +114,8 @@ namespace EB.RestAPI
                     ctx.Database.EnsureDeleted();
                     ctx.Database.EnsureCreated();
 
-                    InitStaticData dataInitilizer = scope.ServiceProvider.GetRequiredService<InitStaticData>();
-                    //dataInitilizer.InitData();
+                    IInitStaticData dataInitilizer = scope.ServiceProvider.GetRequiredService<IInitStaticData>();
+                    dataInitilizer.InitData();
                 }
                 else
                 {

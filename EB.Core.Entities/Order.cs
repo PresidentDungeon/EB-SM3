@@ -11,6 +11,6 @@ namespace EB.Core.Entities
         public DateTime OrderSent { get; set; }
         public double AccumulatedPrice { get; set; }
         public Customer Customer { get; set; }
-        public Beer[] Beers { get; set; }
+        public List<Beer> Beers { get; set; }
     }
 }
