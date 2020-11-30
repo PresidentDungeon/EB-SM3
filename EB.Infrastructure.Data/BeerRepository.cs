@@ -38,7 +38,11 @@ namespace EB.Infrastructure.Data
 
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                beers = from x in beers where x.Name.Contains(filter.Name) select x;
+                beers = from x in beers where x.Name.ToLower().Contains(filter.Name.ToLower()) select x;
+            }
+            if (filter.BeerTypeID != 0)
+            {
+                beers = from x in beers where x.Type.ID == filter.BeerTypeID select x;
             }
             if (!string.IsNullOrEmpty(filter.Sorting) && filter.Sorting.ToLower().Equals("asc"))
             {
