@@ -111,11 +111,11 @@ namespace EB.RestAPI
                 if (env.IsDevelopment())
                 {
                     app.UseDeveloperExceptionPage();
-                    ctx.Database.EnsureDeleted();
+                    //ctx.Database.EnsureDeleted();
                     ctx.Database.EnsureCreated();
 
                     IInitStaticData dataInitilizer = scope.ServiceProvider.GetRequiredService<IInitStaticData>();
-                    dataInitilizer.InitData();
+                    //dataInitilizer.InitData();
                 }
                 else
                 {
