@@ -45,13 +45,14 @@ namespace EB.Infrastructure.Data
                 if (filter.SortingType.Equals("IBU")) { beers = from x in beers orderby x.IBU select x; }
                 if (filter.SortingType.Equals("EBC")) { beers = from x in beers orderby x.EBC select x; }
                 if (filter.SortingType.Equals("ALF")) { beers = from x in beers orderby x.Name select x; }
+                if (filter.SortingType.Equals("ADDED")) { beers = from x in beers orderby x descending select x; }
             }
             else if (!string.IsNullOrEmpty(filter.Sorting) && filter.Sorting.ToLower().Equals("desc"))
             {
                 if (filter.SortingType.Equals("IBU")) { beers = from x in beers orderby x.IBU descending select x; }
                 if (filter.SortingType.Equals("EBC")) { beers = from x in beers orderby x.EBC descending select x; }
                 if (filter.SortingType.Equals("ALF")) { beers = from x in beers orderby x.Name descending select x; }
-                if (filter.SortingType.Equals("ADDED")) { beers = from x in beers orderby x descending select x; }
+                if (filter.SortingType.Equals("ADDED")) { beers = from x in beers orderby x ascending select x; }
             }
 
             int totalItems = beers.Count();
