@@ -13,5 +13,7 @@ namespace EB.Core.Entities
         public string SortingType { get; set; }
         public string Sorting { get; set; }
         public string ProductType { get; set; }
+
+        public int BeerTypeID { get; set; }
     }
 }
