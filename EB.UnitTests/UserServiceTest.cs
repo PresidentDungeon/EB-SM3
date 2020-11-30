@@ -173,13 +173,6 @@ namespace EB.UnitTests
         }
 
 
-
-
-
-
-
-
-
         [Fact]
         public void UserServiceGenerateJWTToken_WithNullUser_ExceptArgumentException()
         {

@@ -44,6 +44,9 @@ namespace EB.RestAPI
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IBrandRepository, BrandRepository>();
 
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddSingleton<IAuthenticationHelper>(new AuthenticationHelper(secretBytes));
             services.AddScoped<IInitStaticData, InitStaticData>();
             services.AddScoped<IValidator, BEValidator>();
@@ -111,11 +114,11 @@ namespace EB.RestAPI
                 if (env.IsDevelopment())
                 {
                     app.UseDeveloperExceptionPage();
-                    //ctx.Database.EnsureDeleted();
+                    ctx.Database.EnsureDeleted();
                     ctx.Database.EnsureCreated();
 
                     IInitStaticData dataInitilizer = scope.ServiceProvider.GetRequiredService<IInitStaticData>();
-                    //dataInitilizer.InitData();
+                    dataInitilizer.InitData();
                 }
                 else
                 {

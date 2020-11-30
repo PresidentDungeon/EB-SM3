@@ -68,8 +68,44 @@ namespace EB.Core.ApplicationServices.Validators
 
         public void ValidateCreateUser(string userName, string password, string userRole)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(userName) || userName.Length < 8 || userName.Length > 24)
+            {
+                throw new ArgumentException("Username must be be between 8-24 characters");
+            }
+            if (string.IsNullOrEmpty(password) || password.Length < 6)
+            {
+                throw new ArgumentException("Password must be minimum 6 characters");
+            }
+            if (string.IsNullOrEmpty(userRole))
+            {
+                throw new ArgumentException("Userrole can't be null or empty");
+            }
         }
+
+        public void ValidateUser(User user)
+        {
+            if (user.ID < 0)
+            {
+                throw new ArgumentException("Invalid ID");
+            }
+            if (string.IsNullOrEmpty(user.Username) || user.Username.Length < 8 || user.Username.Length > 24)
+            {
+                throw new ArgumentException("Username must be be between 8-24 characters");
+            }
+            if (string.IsNullOrEmpty(user.UserRole))
+            {
+                throw new ArgumentException("Userrole can't be null or empty");
+            }
+            if (user.Salt == null || user.Salt.Length <= 0)
+            {
+                throw new ArgumentException("User salt cannot be null or empty");
+            }
+            if (user.Password == null || user.Password.Length <= 0)
+            {
+                throw new ArgumentException("User password cannot be null or empty");
+            }
+        }
+
 
         public void ValidateCustomer(Customer customer)
         {
@@ -123,9 +159,5 @@ namespace EB.Core.ApplicationServices.Validators
             }
         }
 
-        public void ValidateUser(User user)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
