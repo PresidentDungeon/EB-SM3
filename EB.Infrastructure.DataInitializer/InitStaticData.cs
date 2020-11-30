@@ -12,12 +12,14 @@ namespace EB.Infrastructure.DataInitializer
         private IBeerService BeerService;
         private IBeerTypeService BeerTypeService;
         private IBrandService BrandService;
+        private IUserService UserService;
 
-        public InitStaticData(IBeerService beerService, IBeerTypeService beerTypeService, IBrandService brandService)
+        public InitStaticData(IBeerService beerService, IBeerTypeService beerTypeService, IBrandService brandService,IUserService UserService)
         {
             this.BeerService = beerService;
             this.BeerTypeService = beerTypeService;
             this.BrandService = brandService;
+            this.UserService = UserService;
         }
 
         public void InitData()
@@ -50,7 +52,7 @@ namespace EB.Infrastructure.DataInitializer
                 Percentage = 5.4,
                 IBU = 20,
                 EBC = 8,
-                ImageURL = "NotImplementedYet",
+                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/NoImage.png?alt=media&token=d522375a-08c4-4ea9-99b0-30f23e3d52ed",
                 Type = hvedeøl,
                 Brand = ølværket
             };
@@ -63,7 +65,7 @@ namespace EB.Infrastructure.DataInitializer
                 Percentage = 5.4,
                 IBU = 40,
                 EBC = 31,
-                ImageURL = "NotImplementedYet",
+                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/NoImage.png?alt=media&token=d522375a-08c4-4ea9-99b0-30f23e3d52ed",
                 Type = steam,
                 Brand = ølværket
             };
@@ -76,7 +78,7 @@ namespace EB.Infrastructure.DataInitializer
                 Percentage = 4.5,
                 IBU = 35,
                 EBC = 10,
-                ImageURL = "NotImplementedYet",
+                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/NoImage.png?alt=media&token=d522375a-08c4-4ea9-99b0-30f23e3d52ed",
                 Type = pilsner,
                 Brand = carlsberg
             };
@@ -84,10 +86,9 @@ namespace EB.Infrastructure.DataInitializer
             BeerService.CreateBeer(famisbryg);
             BeerService.CreateBeer(cargo);
             BeerService.CreateBeer(carlsbergHumle);
+
+            UserService.AddUser(UserService.CreateUser("SeglerHans", "kodeord", "Admin"));
+            UserService.AddUser(UserService.CreateUser("Kutterjørgen", "lasagne28", "User"));
         }
-
-
-
-
     }
 }

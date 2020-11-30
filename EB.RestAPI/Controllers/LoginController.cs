@@ -40,7 +40,6 @@ namespace EB.RestAPI.Controllers
 
                 return Ok(new
                 {
-                    ID = foundUser.ID,
                     Token = tokenString
                 });
             }
