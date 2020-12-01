@@ -18,13 +18,13 @@ namespace EB.Infrastructure.Data
                 .HasOne(b => b.Brand)
                 .WithMany(bb => bb.Beers).OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Customer)
-                .WithOne(c => c.User).HasForeignKey<Customer>(c => c.ID).OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<User>()
+            //    .HasOne(u => u.Customer);
 
-            //modelBuilder.Entity<Customer>()
-            //    .HasOne(c => c.User)
-            //    .WithOne(u => u.Customer).HasForeignKey<User>(c => c.ID).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasOne(c => c.Customer)
+                .WithOne(c => c.User).HasForeignKey<Customer>(c => c.ID).OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<Beer> Beers { get; set; }

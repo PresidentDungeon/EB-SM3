@@ -34,22 +34,24 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(-1, "Beer", "Fra 1884!", 65, 50, 100, 14, "image.png", "Invalid ID")]                        // invalid id: -1
-        [InlineData(int.MinValue, "Beer", "Fra 1884!", 65, 50, 100, 14, "image.png", "Invalid ID")]              // invalid id: -2147483648
-        [InlineData(1, null, "Fra 1884!", 65, 50, 100, 14, "image.png", "Name can not be empty")]                // invalid name: null
-        [InlineData(1, "", "Fra 1884!", 65, 50, 100, 14, "image.png", "Name can not be empty")]                  // invalid name: ""
-        [InlineData(1, "Beer", null, 65, 50, 100, 14, "image.png", "Description can not be empty")]              // invalid description: null
-        [InlineData(1, "Beer", "", 65, 50, 100, 14, "image.png", "Description can not be empty")]                // invalid description: ""
-        [InlineData(1, "Beer", "Fra 1884!", 0, 50, 100, 14, "image.png", "Price must be higher than zero")]      // invalid price: 0
-        [InlineData(1, "Beer", "Fra 1884!", -1, 50, 100, 14, "image.png", "Price must be higher than zero")]     // invalid price: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, -1, 100, 14, "image.png", "EBC must be betweeen 0-80")]          // invalid EBC: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, 81, 100, 14, "image.png", "EBC must be betweeen 0-80")]          // invalid EBC: 81
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, -1, 14, "image.png", "IBU must be betweeen 0-120")]          // invalid IBU: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 121, 14, "image.png", "IBU must be betweeen 0-120")]         // invalid IBU: 121
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, -1, "image.png", "Percentage must be between 0-100")]   // invalid percentage: -1
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 101, "image.png", "Percentage must be between 0-100")]  // invalid percentage: 101
+        [InlineData(-1, "Beer", "Fra 1884!", 65, 50, 100, 14, 500, "image.png", "Invalid ID")]                                                    // invalid id: -1
+        [InlineData(int.MinValue, "Beer", "Fra 1884!", 65, 50, 100, 14, 500, "image.png", "Invalid ID")]                                          // invalid id: -2147483648
+        [InlineData(1, null, "Fra 1884!", 65, 50, 100, 14, 500, "image.png", "Name can not be empty")]                                            // invalid name: null
+        [InlineData(1, "", "Fra 1884!", 65, 50, 100, 14, 500, "image.png", "Name can not be empty")]                                              // invalid name: ""
+        [InlineData(1, "Beer", null, 65, 50, 100, 14, 500, "image.png", "Description can not be empty")]                                          // invalid description: null
+        [InlineData(1, "Beer", "", 65, 50, 100, 14, 500, "image.png", "Description can not be empty")]                                            // invalid description: ""
+        [InlineData(1, "Beer", "Fra 1884!", 0, 50, 100, 14, 500, "image.png", "Price must be higher than zero")]                                  // invalid price: 0
+        [InlineData(1, "Beer", "Fra 1884!", -1, 50, 100, 14, 500, "image.png", "Price must be higher than zero")]                                 // invalid price: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, -1, 100, 14, 500, "image.png", "EBC must be betweeen 0-80")]                                      // invalid EBC: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, 81, 100, 14, 500, "image.png", "EBC must be betweeen 0-80")]                                      // invalid EBC: 81
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, -1, 14, 500, "image.png", "IBU must be betweeen 0-120")]                                      // invalid IBU: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 121, 14, 500, "image.png", "IBU must be betweeen 0-120")]                                     // invalid IBU: 121
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, -1, 500, "image.png", "Percentage must be between 0-100")]                               // invalid percentage: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 101, 500, "image.png", "Percentage must be between 0-100")]                              // invalid percentage: 101
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 14, -1, "image.png", "Stock must be a whole number above or equal to zero")]             // invalid stock: -1
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 14, int.MinValue, "image.png", "Stock must be a whole number above or equal to zero")]   // invalid stock: -2147483648
 
-        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double EBC, double IBU, double percentage, string imageURL, string expectedErrorMsg)
+        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double EBC, double IBU, double percentage, int stock, string imageURL, string expectedErrorMsg)
         {
             // arrange
             Brand brand = new Brand { ID = 1 };
@@ -64,6 +66,7 @@ namespace EB.UnitTests
                 EBC = EBC,
                 IBU = IBU,
                 Percentage = percentage,
+                Stock = stock,
                 ImageURL = imageURL,
                 Brand = brand,
                 Type = type
@@ -93,6 +96,7 @@ namespace EB.UnitTests
                 EBC = 60,
                 IBU = 40,
                 Percentage = 6.5,
+                Stock = 49,
                 ImageURL = "image.png",
                 Brand = brand,
                 Type = type
@@ -122,6 +126,7 @@ namespace EB.UnitTests
                 EBC = 60,
                 IBU = 40,
                 Percentage = 6.5,
+                Stock = 60,
                 ImageURL = "image.png",
                 Brand = brand,
                 Type = type
@@ -136,10 +141,10 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 14, "image.png")]
-        [InlineData(2, "Beer2", "Fra 1882!", 200, 20, 35, 4, "")]
-        [InlineData(2, "Beer2", "Fra 1882!", 200, 20, 35, 4, null)]
-        public void AddBeer_ValidBeer(int id, string name, string description, double price, double EBC, double IBU, double percentage, string ImageURL)
+        [InlineData(1, "Beer", "Fra 1884!", 65, 50, 100, 14, 500, "image.png")]
+        [InlineData(2, "Beer2", "Fra 1882!", 200, 20, 35, 4, int.MaxValue, "")]
+        [InlineData(2, "Beer2", "Fra 1882!", 200, 20, 35, 4, 0, null)]
+        public void AddBeer_ValidBeer(int id, string name, string description, double price, double EBC, double IBU, double percentage, int stock, string ImageURL)
         {
             // arrange
             Brand brand = new Brand { ID = 1 };

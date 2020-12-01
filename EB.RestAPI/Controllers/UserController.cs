@@ -23,11 +23,12 @@ namespace EB.RestAPI.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(User), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
-        public ActionResult<User> CreateUser([FromBody] User user)
+        public ActionResult<User> CreateUser([FromBody] LoginInputModel model)
         {
             try
             {
-                User addedUser = UserService.AddUser(user);
+                User createdUser = UserService.CreateUser(model.Username, model.Password, "user");
+                User addedUser = UserService.AddUser(createdUser);
 
                 if (addedUser == null)
                 {
