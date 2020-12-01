@@ -108,7 +108,9 @@ namespace EB.Core.ApplicationServices.Impl
             {
                 throw new ArgumentException("Updating user does not exist");
             }
+
             Validator.ValidateUser(user);
+
             if (GetUserByID(user.ID) == null)
             {
                 throw new InvalidOperationException("No user with such ID found");

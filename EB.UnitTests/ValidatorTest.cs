@@ -1,6 +1,7 @@
 ﻿using EB.Core.ApplicationServices;
 using EB.Core.ApplicationServices.Validators;
 using EB.Core.Entities;
+using EB.Core.Entities.Security;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -331,6 +332,214 @@ namespace EB.UnitTests
             // act + assert
             validator.ValidateCustomer(customer);
         }
+
+        [Theory]
+        [InlineData(null, "kodeord", "user", "Username must be be between 8-24 characters")]                        // invalid username: null
+        [InlineData("", "kodeord", "user", "Username must be be between 8-24 characters")]                          // invalid username: ""
+        [InlineData("Jespern", "kodeord", "user", "Username must be be between 8-24 characters")]                   // invalid username: under 8 characters
+        [InlineData("JespernJespernJespernJesp", "kodeord", "user", "Username must be be between 8-24 characters")] // invalid username: over 24 characters
+        [InlineData("Andreasen", null, "user", "Password must be minimum 6 characters")]                            // invalid password: null
+        [InlineData("Andreasen", "", "user", "Password must be minimum 6 characters")]                              // invalid password: ""
+        [InlineData("Andreasen", "kode", "user", "Password must be minimum 6 characters")]                          // invalid password: under 6 characters
+
+        [InlineData("Andreasen", "kodeord", null, "Userrole can't be null or empty")]                               // invalid userrole: null
+        [InlineData("Andreasen", "kodeord", "", "Userrole can't be null or empty")]                                 // invalid userrole: ""
+        public void CreateUser_InvalidUser_ExceptArgumentException(string username, string password, string userrole, string expectedErrorMsg)
+        {
+            // arrange
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateCreateUser(username, password, userrole));
+
+            Assert.Equal(expectedErrorMsg, ex.Message);
+        }
+
+        [Theory]
+        [InlineData("Andreasen", "lasagne28", "User")]
+        [InlineData("HurtigeJan", "2X34gggy55", "Admin")]
+        public void CreateUser_ValidUser(string username, string password, string userrole)
+        {
+            // arrange
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            validator.ValidateCreateUser(username, password, userrole);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [Theory]
+        [InlineData(-1, "Andreasen", "user", "Invalid ID")]                                                 // invalid id: -1
+        [InlineData(int.MinValue, "Andreasen", "user", "Invalid ID")]                                       // invalid id: -2147483648
+        [InlineData(1, null, "user", "Username must be be between 8-24 characters")]                        // invalid username: null
+        [InlineData(1, "", "user", "Username must be be between 8-24 characters")]                          // invalid username: ""
+        [InlineData(1, "Jespern", "user", "Username must be be between 8-24 characters")]                   // invalid username: under 8 characters
+        [InlineData(1, "JespernJespernJespernJesp", "user", "Username must be be between 8-24 characters")] // invalid username: over 24 characters
+        [InlineData(1, "Andreasen", null, "Userrole can't be null or empty")]                               // invalid userrole: null
+        [InlineData(1, "Andreasen", "", "Userrole can't be null or empty")]                                 // invalid userrole: ""
+        public void AddUser_InvalidUser_ExceptArgumentException(int id, string username, string userrole, string expectedErrorMsg)
+        {
+            // arrange
+            byte[] password = new byte[] { 1 };
+            byte[] salt = new byte[] { 1 };
+
+            User user = new User
+            {
+                ID = id,
+                Username = username,
+                UserRole = userrole,
+                Password = password,
+                Salt = salt
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateUser(user));
+
+            Assert.Equal(expectedErrorMsg, ex.Message);
+        }
+
+        [Fact]
+        public void AddUser_InvalidPasswordNull_ExceptArgumentException()
+        {
+            // arrange
+            byte[] password = null;
+            byte[] salt = new byte[] { 1 };
+
+            User user = new User
+            {
+                ID = 1,
+                Username = "Andreasen",
+                UserRole = "User",
+                Password = password,
+                Salt = salt
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateUser(user));
+
+            Assert.Equal("User password cannot be null or empty", ex.Message);
+        }
+
+        [Fact]
+        public void AddUser_InvalidPasswordEmpty_ExceptArgumentException()
+        {
+            // arrange
+            byte[] password = new byte[] { };
+            byte[] salt = new byte[] { 1 };
+
+            User user = new User
+            {
+                ID = 1,
+                Username = "Andreasen",
+                UserRole = "User",
+                Password = password,
+                Salt = salt
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateUser(user));
+
+            Assert.Equal("User password cannot be null or empty", ex.Message);
+        }
+
+        [Fact]
+        public void AddUser_InvalidSaltNull_ExceptArgumentException()
+        {
+            // arrange
+            byte[] password = new byte[] { 1 };
+            byte[] salt = null;
+
+            User user = new User
+            {
+                ID = 1,
+                Username = "Andreasen",
+                UserRole = "User",
+                Password = password,
+                Salt = salt
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateUser(user));
+
+            Assert.Equal("User salt cannot be null or empty", ex.Message);
+        }
+
+        [Fact]
+        public void AddUser_InvalidSaltEmpty_ExceptArgumentException()
+        {
+            // arrange
+            byte[] password = new byte[] { 1 };
+            byte[] salt = new byte[] { };
+
+            User user = new User
+            {
+                ID = 1,
+                Username = "Andreasen",
+                UserRole = "User",
+                Password = password,
+                Salt = salt
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateUser(user));
+
+            Assert.Equal("User salt cannot be null or empty", ex.Message);
+        }
+
+        [Theory]
+        [InlineData(1, "Andreasen", "User")]
+        [InlineData(2, "HurtigeJan", "Admin")]
+        public void AddUser_ValidUser(int id, string username, string userrole)
+        {
+            // arrange
+            byte[] password = new byte[] { 1 };
+            byte[] salt = new byte[] { 1 };
+
+            User user = new User
+            {
+                ID = id,
+                Username = username,
+                UserRole = userrole,
+                Password = password,
+                Salt = salt
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            validator.ValidateUser(user);
+        }
+
+
 
     }
 }
