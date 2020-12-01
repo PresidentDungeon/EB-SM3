@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EB.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,5 +16,6 @@ namespace EB.Infrastructure.Data
         }
 
         public DbSet<Type> Types { get; set; }
+        public DbSet<Order> Orders { get; set; }
     }
 }

@@ -28,6 +28,11 @@ namespace EB.Core.ApplicationServices.Validators
             throw new NotImplementedException();
         }
 
+        public void ValidateOrder(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ValidateType(BeerType type)
         {
             throw new NotImplementedException();

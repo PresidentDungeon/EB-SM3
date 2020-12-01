@@ -14,5 +14,6 @@ namespace EB.Core.ApplicationServices
         public void ValidateCustomer(Customer customer);
         public void ValidateCreateUser(string userName, string password, string userRole);
         public void ValidateUser(User user);
+        public void ValidateOrder(Order order);
     }
 }
