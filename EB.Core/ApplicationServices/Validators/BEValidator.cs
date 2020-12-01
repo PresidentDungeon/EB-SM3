@@ -36,9 +36,14 @@ namespace EB.Core.ApplicationServices.Validators
             {
                 throw new ArgumentException("IBU must be betweeen 0-120");
             }
+
             if (beer.Percentage < 0 || beer.Percentage > 100)
             {
                 throw new ArgumentException("Percentage must be between 0-100");
+            }
+            if (beer.Stock < 0)
+            {
+                throw new ArgumentException("Stock must be a whole number above or equal to zero");
             }
             if (beer.Brand == null)
             {

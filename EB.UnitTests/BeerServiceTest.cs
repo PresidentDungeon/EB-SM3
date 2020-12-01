@@ -143,9 +143,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png")]
-        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, "x.jpg")]
-        public void AddBeer_ValidBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL)
+        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, 50, "x.png")]
+        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, 55, "x.jpg")]
+        public void AddBeer_ValidBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC, int stock, string imageURL)
         {
             // arrange
 
@@ -164,6 +164,7 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                Stock = stock,
                 ImageURL = imageURL,
                 Type = type,
                 Brand = brand
@@ -183,9 +184,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png", "Name is null exception")]
-        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, "x.png", "Description is null exception")]
-        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL, string errorExpected)
+        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, 50, "x.png", "Name is null exception")]
+        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, 45, "x.png", "Description is null exception")]
+        public void AddBeer_InvalidBeer_ExceptArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, int stock, string imageURL, string errorExpected)
         {
             // arrange
             BeerType type = new BeerType { ID = 1 };
@@ -203,6 +204,7 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                Stock = stock,
                 ImageURL = imageURL,
                 Type = type,
                 Brand = brand
@@ -241,6 +243,7 @@ namespace EB.UnitTests
                 Percentage = 4.8,
                 IBU = 3,
                 EBC = 15,
+                Stock = 25,
                 ImageURL = "x.png",
                 Type = type,
                 Brand = brand
@@ -278,6 +281,7 @@ namespace EB.UnitTests
                 Percentage = 4.8,
                 IBU = 3,
                 EBC = 15,
+                Stock = 32,
                 ImageURL = "x.png",
                 Type = type,
                 Brand = brand
@@ -443,9 +447,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png")]
-        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, "x.jpg")]
-        public void UpdateBeer_ValidExistingBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL)
+        [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, 0, "x.png")]
+        [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, 20, "x.jpg")]
+        public void UpdateBeer_ValidExistingBeer(int id, string name, string description, double price, double percentage, double IBU, double EBC, int stock, string imageURL)
         {
             // arrange
             BeerType type = new BeerType { ID = 1 };
@@ -463,6 +467,7 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                Stock = stock,
                 ImageURL = imageURL,
                 Type = type,
                 Brand = brand
@@ -487,9 +492,9 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, "x.png", "Name is null exception")]
-        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, "x.jpg", "Description is null exception")]
-        public void UpdateBeer_InvalidBeer_ExpectArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, string imageURL,  string errorExpected)
+        [InlineData(1, null, "Kobberfarvet", 56, 6.6, 2.2, 1.1, 92, "x.png", "Name is null exception")]
+        [InlineData(2, "FIMUSBRYG", null, 65, 5.1, 5.3, 2.1, 65, "x.jpg", "Description is null exception")]
+        public void UpdateBeer_InvalidBeer_ExpectArgumentException(int id, string name, string description, double price, double percentage, double IBU, double EBC, int stock, string imageURL,  string errorExpected)
         {
             // arrange
             BeerType type = new BeerType { ID = 1 };
@@ -507,6 +512,7 @@ namespace EB.UnitTests
                 Percentage = percentage,
                 IBU = IBU,
                 EBC = EBC,
+                Stock = stock,
                 ImageURL = imageURL,
                 Type = type,
                 Brand = brand
@@ -563,6 +569,7 @@ namespace EB.UnitTests
                 Percentage = 6.6,
                 IBU = 2.2,
                 EBC = 1.1,
+                Stock = 76,
                 ImageURL = "x.png",
                 Type = type,
                 Brand = brand
@@ -597,6 +604,7 @@ namespace EB.UnitTests
                 Percentage = 6.6,
                 IBU = 2.2,
                 EBC = 1.1,
+                Stock = 24,
                 ImageURL = "x.png",
                 Type = type,
                 Brand = brand
@@ -635,6 +643,7 @@ namespace EB.UnitTests
                 Percentage = 6.6,
                 IBU = 2.2,
                 EBC = 1.1,
+                Stock = 106,
                 ImageURL = "x.png",
                 Type = type,
                 Brand = brand
@@ -674,6 +683,7 @@ namespace EB.UnitTests
                 Percentage = 6.6,
                 IBU = 2.2,
                 EBC = 1.1,
+                Stock = 45,
                 ImageURL = "x.png",
                 Type = type,
                 Brand = brand
@@ -708,6 +718,7 @@ namespace EB.UnitTests
                 Percentage = 6.6,
                 IBU = 2.2,
                 EBC = 1.1,
+                Stock = 22,
                 ImageURL = "x.png"
             };
 
