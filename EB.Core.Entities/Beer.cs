@@ -17,6 +17,6 @@ namespace EB.Core.Entities
         public string ImageURL { get; set; }
         public BeerType Type  { get; set; }
         public Brand Brand { get; set; }
-        //public Collection Collection { get; set; }
+        public List<OrderBeer> OrderBeers { get; set; }
     }
 }
