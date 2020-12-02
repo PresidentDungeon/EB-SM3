@@ -17,17 +17,21 @@ namespace EB.UnitTests
     {
         private readonly SortedDictionary<int, Order> orderDatabase;
         private readonly SortedDictionary<int, Customer> customerDatabase;
+        private readonly SortedDictionary<int, Beer> beerDatabase;
         private readonly Mock<IOrderRepository> repoMock;
         private readonly Mock<ICustomerRepository> customerMock;
+        private readonly Mock<IBeerRepository> beerMock;
         private readonly Mock<IValidator> validatorMock;
 
         public OrderServiceTest()
         {
             orderDatabase = new SortedDictionary<int, Order>();
             customerDatabase = new SortedDictionary<int, Customer>();
+            beerDatabase = new SortedDictionary<int, Beer>();
 
             repoMock = new Mock<IOrderRepository>();
             customerMock = new Mock<ICustomerRepository>();
+            beerMock = new Mock<IBeerRepository>();
             validatorMock = new Mock<IValidator>();
 
             repoMock.Setup(repo => repo.AddOrder(It.IsAny<Order>())).Callback<Order>(order => orderDatabase.Add(order.ID, order));
@@ -37,6 +41,7 @@ namespace EB.UnitTests
             repoMock.Setup(repo => repo.ReadOrderByID(It.IsAny<int>())).Returns<int>((id) => orderDatabase.ContainsKey(id) ? orderDatabase[id] : null);
 
             customerMock.Setup(repo => repo.ReadCustomerById(It.IsAny<int>())).Returns<int>((id) => customerDatabase.ContainsKey(id) ? customerDatabase[id] : null);
+            beerMock.Setup(repo => repo.ReadSimpleBeerByID(It.IsAny<int>())).Returns<int>((id) => beerDatabase.ContainsKey(id) ? beerDatabase[id] : null);
         }
 
         [Fact]
@@ -46,7 +51,7 @@ namespace EB.UnitTests
             OrderService service = null;
 
             // act + assert
-            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(null as IOrderRepository, null as ICustomerRepository, null as IValidator));
+            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(null as IOrderRepository, null as IBeerRepository, null as ICustomerRepository, null as IValidator));
 
             Assert.Equal("Repository can't be null", ex.Message);
         }
@@ -58,19 +63,19 @@ namespace EB.UnitTests
             OrderService service = null;
 
             // act + assert
-            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(null as IOrderRepository, null as ICustomerRepository, validatorMock.Object));
+            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(null as IOrderRepository, null as IBeerRepository, null as ICustomerRepository, validatorMock.Object));
 
             Assert.Equal("Repository can't be null", ex.Message);
         }
 
         [Fact]
-        public void CreateOrderService_OrderRepositoryIsNull_ExpectNullReferenceException()
+        public void CreateOrderService_OrderAndBeerRepositoryIsNull_ExpectNullReferenceException()
         {
             // arrange
             OrderService service = null;
 
             // act + assert
-            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(null as IOrderRepository, customerMock.Object, validatorMock.Object));
+            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(null as IOrderRepository, null as IBeerRepository, customerMock.Object, validatorMock.Object));
 
             Assert.Equal("Repository can't be null", ex.Message);
         }
@@ -83,7 +88,7 @@ namespace EB.UnitTests
             OrderService service = null;
 
             // act + assert
-            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(repoMock.Object, customerMock.Object, null as IValidator));
+            var ex = Assert.Throws<NullReferenceException>(() => service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, null as IValidator));
 
             Assert.Equal("Validator can't be null", ex.Message);
         }
@@ -95,7 +100,7 @@ namespace EB.UnitTests
             OrderService service = null;
 
             // act + assert
-            service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             Assert.NotNull(service);
         }
@@ -106,9 +111,8 @@ namespace EB.UnitTests
             // arrange
 
             // act + assert
-            new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object).Should().BeAssignableTo<IOrderService>();
+            new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object).Should().BeAssignableTo<IOrderService>();
         }
-
 
 
         [Fact]
@@ -118,15 +122,21 @@ namespace EB.UnitTests
             Customer customer = new Customer {ID = 1 };
             customerDatabase.Add(customer.ID, customer);
 
+            Beer beer = new Beer { ID = 1, Price = 65, Stock = 3};
+            beerDatabase.Add(beer.ID, beer);
+
+            List<OrderBeer> orderedBeers = new List<OrderBeer> { new OrderBeer { BeerID = beer.ID, Amount = 2 } };
+
             Order order = new Order()
             {
                 ID = 1,
                 OrderCreated = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
-                AccumulatedPrice = 256.5,
-                Customer = customer
+                AccumulatedPrice = 130,
+                Customer = customer,
+                OrderBeers = orderedBeers
             };
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             service.AddOrder(order);
@@ -134,6 +144,81 @@ namespace EB.UnitTests
             // assert
             Assert.Contains(order, orderDatabase.Values);
             repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Once);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.Is<int>(id => id == beer.ID)), Times.Once);
+            customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == customer.ID)), Times.Once);
+            validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
+        }
+
+        [Fact]
+        public void AddOrder_OrderAmountHigherThanStock_ExpectInvalidOperationException()
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            customerDatabase.Add(customer.ID, customer);
+
+            Beer beer = new Beer { ID = 1, Price = 65, Stock = 5 };
+            beerDatabase.Add(beer.ID, beer);
+
+            List<OrderBeer> orderedBeers = new List<OrderBeer> { new OrderBeer { BeerID = beer.ID, Amount = 7 } };
+
+            Order order = new Order()
+            {
+                ID = 1,
+                OrderCreated = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
+                AccumulatedPrice = 256.5,
+                Customer = customer,
+                OrderBeers = orderedBeers
+            };
+
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
+
+            // act
+            var ex = Assert.Throws<InvalidOperationException>(() => service.AddOrder(order));
+
+            // assert
+            Assert.Equal("Order amount higher than inventory stock", ex.Message);
+            Assert.DoesNotContain(order, orderDatabase.Values);
+            repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Never);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.Is<int>(id => id == beer.ID)), Times.Once);
+            customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == customer.ID)), Times.Once);
+            validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
+        }
+
+        [Fact]
+        public void AddOrder_OrderAmountHigherThanStockMoreWares_ExpectInvalidOperationException()
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            customerDatabase.Add(customer.ID, customer);
+
+            Beer beer1 = new Beer { ID = 1, Price = 65, Stock = 5};
+            Beer beer2 = new Beer { ID = 2, Price = 65, Stock = 2};
+
+            beerDatabase.Add(beer1.ID, beer1);
+            beerDatabase.Add(beer2.ID, beer2);
+
+            List<OrderBeer> orderedBeers = new List<OrderBeer> { new OrderBeer { BeerID = beer1.ID, Amount = 5 }, new OrderBeer { BeerID = beer2.ID, Amount = 3 } };
+
+            Order order = new Order()
+            {
+                ID = 1,
+                OrderCreated = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
+                AccumulatedPrice = 256.5,
+                Customer = customer,
+                OrderBeers = orderedBeers
+            };
+
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
+
+            // act
+            var ex = Assert.Throws<InvalidOperationException>(() => service.AddOrder(order));
+
+            // assert
+            Assert.Equal("Order amount higher than inventory stock", ex.Message);
+            Assert.DoesNotContain(order, orderDatabase.Values);
+            repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Never);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.Is<int>(id => id == beer1.ID)), Times.Once);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.Is<int>(id => id == beer2.ID)), Times.Once);
             customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == customer.ID)), Times.Once);
             validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
         }
@@ -152,16 +237,18 @@ namespace EB.UnitTests
                 Customer = customer
             };
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             var ex = Assert.Throws<ArgumentException>(() => service.AddOrder(order));
 
             // assert
             Assert.Equal("Customer cannot be null", ex.Message);
+            Assert.DoesNotContain(order, orderDatabase.Values);
             repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Never);
             customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == customer.ID)), Times.Never);
             validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Never);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -178,16 +265,18 @@ namespace EB.UnitTests
                 Customer = customer
             };
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             var ex = Assert.Throws<ArgumentException>(() => service.AddOrder(order));
 
             // assert
             Assert.Equal("Customer cannot be null", ex.Message);
+            Assert.DoesNotContain(order, orderDatabase.Values);
             repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Never);
             customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == customer.ID)), Times.Once);
             validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Never);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.IsAny<int>()), Times.Never);
         }
 
         [Theory]
@@ -209,7 +298,7 @@ namespace EB.UnitTests
 
             validatorMock.Setup(mock => mock.ValidateOrder(It.IsAny<Order>())).Callback<Order>(order => throw new ArgumentException(errorExpected));
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             var ex = Assert.Throws<ArgumentException>(() => service.AddOrder(order));
@@ -220,6 +309,7 @@ namespace EB.UnitTests
             validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
             customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(ID => ID == customer.ID)), Times.Once);
             repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Never);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.IsAny<int>()), Times.Never);
         }
 
         [Theory]
@@ -231,15 +321,24 @@ namespace EB.UnitTests
             Customer customer = new Customer { ID = 1 };
             customerDatabase.Add(customer.ID, customer);
 
+            Beer beer1 = new Beer { ID = 1, Price = 65, Stock = 5 };
+            Beer beer2 = new Beer { ID = 2, Price = 65, Stock = 2 };
+
+            beerDatabase.Add(beer1.ID, beer1);
+            beerDatabase.Add(beer2.ID, beer2);
+
+            List<OrderBeer> orderedBeers = new List<OrderBeer> { new OrderBeer { BeerID = beer1.ID, Amount = 5 }, new OrderBeer { BeerID = beer2.ID, Amount = 1 } };
+
             Order order = new Order()
             {
                 ID = id,
                 OrderCreated = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
                 AccumulatedPrice = price,
-                Customer = customer
+                Customer = customer,
+                OrderBeers = orderedBeers
             };
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             service.AddOrder(order);
@@ -248,6 +347,46 @@ namespace EB.UnitTests
             Assert.Contains(order, orderDatabase.Values);
             repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Once);
             customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(ID => ID == customer.ID)), Times.Once);
+            validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.Is<int>(id => id == beer1.ID)), Times.Once);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.Is<int>(id => id == beer2.ID)), Times.Once);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.IsAny<int>()), Times.Exactly(2));
+        }
+
+        [Theory]
+        [InlineData(22, 2, 3)]
+        [InlineData(249.95, 3, 10)]
+        public void AddOrder_ValidOrderCorrectAmount(double price, int amount, int stock)
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            customerDatabase.Add(customer.ID, customer);
+
+            Beer beer = new Beer { ID = 1, Price = price, Stock = stock };
+            beerDatabase.Add(beer.ID, beer);
+
+            List<OrderBeer> orderedBeers = new List<OrderBeer> { new OrderBeer { BeerID = beer.ID, Amount = amount } };
+
+            Order order = new Order()
+            {
+                ID = 1,
+                OrderCreated = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
+                AccumulatedPrice = 130,
+                Customer = customer,
+                OrderBeers = orderedBeers
+            };
+
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
+
+            // act
+            service.AddOrder(order);
+
+            // assert
+            Assert.Contains(order, orderDatabase.Values);
+            Assert.Equal(Math.Round(price*amount,2), orderDatabase[1].AccumulatedPrice);
+            repoMock.Verify(repo => repo.AddOrder(It.Is<Order>(o => o == order)), Times.Once);
+            beerMock.Verify(repo => repo.ReadSimpleBeerByID(It.Is<int>(id => id == beer.ID)), Times.Once);
+            customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == customer.ID)), Times.Once);
             validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
         }
 
@@ -258,7 +397,7 @@ namespace EB.UnitTests
             Order order = new Order { ID = 1 };
             orderDatabase.Add(order.ID, order);
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             var result = service.ReadOrderByID(order.ID);
@@ -277,7 +416,7 @@ namespace EB.UnitTests
 
             orderDatabase.Add(order2.ID, order2);
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object); ;
 
             // act
             var result = service.ReadOrderByID(order1.ID);
@@ -305,7 +444,7 @@ namespace EB.UnitTests
                 orderDatabase.Add(order.ID, order);
             }
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             var result = service.ReadAllOrders();
@@ -333,7 +472,7 @@ namespace EB.UnitTests
             orderDatabase.Add(order3.ID, order3);
 
             var expected = new List<Order> {order3};
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             var result = service.ReadAllOrdersByCustomer(customer2.ID);
@@ -354,7 +493,7 @@ namespace EB.UnitTests
 
             orderDatabase.Add(order.ID, order);
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
             service.DeleteOrder(order.ID);
@@ -370,7 +509,7 @@ namespace EB.UnitTests
         {
             // arrange
 
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             Order order = new Order()
             {
@@ -392,7 +531,7 @@ namespace EB.UnitTests
         public void RemoveOrder_IncorrectID_ExpectArgumentException(int ID)
         {
             // arrange
-            OrderService service = new OrderService(repoMock.Object, customerMock.Object, validatorMock.Object);
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act + assert
             var ex = Assert.Throws<ArgumentException>(() => service.DeleteOrder(ID));

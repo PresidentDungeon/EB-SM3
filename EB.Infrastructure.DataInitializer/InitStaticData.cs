@@ -56,7 +56,7 @@ namespace EB.Infrastructure.DataInitializer
                 IBU = 60,
                 EBC = 70,
                 Stock = 5,
-                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/225023694.png?alt=media&token=e54b5623-a7dc-4a6b-b911-0ed503428f9c",
+                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/XL%20BOREBISSE.png?alt=media&token=e810dddf-e099-4ea5-ab4d-af5067eba37b",
                 Type = stout,
                 Brand = ølværket
             };
@@ -70,7 +70,7 @@ namespace EB.Infrastructure.DataInitializer
                 IBU = 60,
                 EBC = 26,
                 Stock = 3,
-                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/548622110.png?alt=media&token=eb67524a-38c1-4fc7-a21b-3de34d85591d",
+                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/XL%20CARGO.png?alt=media&token=8b5a4933-7331-401f-b906-0590e45ae20c",
                 Type = steam,
                 Brand = ølværket
             };
@@ -84,7 +84,7 @@ namespace EB.Infrastructure.DataInitializer
                 IBU = 60,
                 EBC = 26,
                 Stock = 99,
-                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/566781339.png?alt=media&token=cf4fc0bc-5917-463d-8e34-e06ff5659fca",
+                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/258701189.png?alt=media&token=988b3f15-f5db-424f-bc3e-1ca6a497acf6",
                 Type = saison,
                 Brand = ølværket
             };
@@ -98,7 +98,7 @@ namespace EB.Infrastructure.DataInitializer
                 IBU = 60,
                 EBC = 26,
                 Stock = 10,
-                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/566781339.png?alt=media&token=cf4fc0bc-5917-463d-8e34-e06ff5659fca",
+                ImageURL = "https://firebasestorage.googleapis.com/v0/b/eb-sdm3.appspot.com/o/149572519.png?alt=media&token=d28f0523-22c5-4ade-9412-d296ce964986",
                 Type = saison,
                 Brand = ølværket
             };

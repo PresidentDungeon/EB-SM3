@@ -31,16 +31,20 @@ namespace EB.RestAPI.Controllers
             {
                 Order addedOrder = OrderService.AddOrder(order);
 
-                if (order == null)
+                if (addedOrder == null)
                 {
-                    return StatusCode(500, "Error saving product to Database");
+                    return StatusCode(500, "Error creating order");
                 }
 
-                return Created("", order);
+                return Created("", addedOrder);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "Error creating order");
             }
         }
         #endregion
