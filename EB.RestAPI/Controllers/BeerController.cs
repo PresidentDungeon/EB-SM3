@@ -60,7 +60,6 @@ namespace EB.RestAPI.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(ex.Message);
                 return StatusCode(500, "Couldn't load beers. Please try again later.");
             }
         }

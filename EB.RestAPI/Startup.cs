@@ -50,6 +50,9 @@ namespace EB.RestAPI
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
 
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
             services.AddSingleton<IAuthenticationHelper>(new AuthenticationHelper(secretBytes));
             services.AddScoped<IInitStaticData, InitStaticData>();
             services.AddScoped<IValidator, BEValidator>();

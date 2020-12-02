@@ -164,5 +164,37 @@ namespace EB.Core.ApplicationServices.Validators
             }
         }
 
+        public void ValidateOrder(Order order)
+        {
+            if (order == null)
+            {
+                throw new ArgumentException("Order instance can't be null");
+            }
+            if (order.ID < 0)
+            {
+                throw new ArgumentException("Invalid ID");
+            }
+            if (order.AccumulatedPrice <= 0)
+            {
+                throw new ArgumentException("Price must be higher than zero");
+            }
+            if (order.OrderCreated.Date == new DateTime().Date)
+            {
+                throw new ArgumentException("No order attached");
+            }
+            if (order.Customer == null)
+            {
+                throw new ArgumentException("Invalid customer");
+            }
+            if (order.OrderBeers == null ||order.OrderBeers.Count <= 0)
+            {
+                throw new ArgumentException("Can not process order with no products");
+            }
+
+
+
+
+
+        }
     }
 }

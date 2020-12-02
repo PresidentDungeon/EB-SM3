@@ -6,6 +6,7 @@ using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Text;
 using Xunit;
 
@@ -362,7 +363,7 @@ namespace EB.UnitTests
 
         [Theory]
         [InlineData("Andreasen", "lasagne28", "User")]
-        [InlineData("HurtigeJan", "2X34gggy55", "Admin")]
+        [InlineData("HurtigeJan", "2sa55y4me@$FA", "Admin")]
         public void CreateUser_ValidUser(string username, string password, string userrole)
         {
             // arrange
@@ -371,25 +372,6 @@ namespace EB.UnitTests
             // act + assert
             validator.ValidateCreateUser(username, password, userrole);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         [Theory]
@@ -544,7 +526,172 @@ namespace EB.UnitTests
             validator.ValidateUser(user);
         }
 
+        [Theory]
+        [InlineData(1, 100)]
+        [InlineData(2, 35)]
+        public void AddOrder_ValidOrder(int id, double price)
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            DateTime orderDate = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat);
+            List<OrderBeer> orderBeers = new List<OrderBeer> { new OrderBeer { BeerID = 1 } };
 
+            Order order = new Order
+            {
+                ID = id,
+                AccumulatedPrice = price,
+                Customer = customer,
+                OrderCreated = orderDate,
+                OrderBeers = orderBeers
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            validator.ValidateOrder(order);
+        }
+
+        [Fact]
+        public void AddOrder_InvalidOrderNull_ExceptArgumentException()
+        {
+            // arrange
+            Order order = null;
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateOrder(order));
+
+            Assert.Equal("Order instance can't be null", ex.Message);
+        }
+
+        [Theory]
+        [InlineData(-1, 100, "Invalid ID")]               // invalid id: -1
+        [InlineData(int.MinValue, 35, "Invalid ID")]      // invalid id: -2147483648
+        [InlineData(1, -1, "Price must be higher than zero")]                 // invalid AccumulatedPrice: -1
+        [InlineData(2, int.MinValue, "Price must be higher than zero")]       // invalid AccumulatedPrice: -2147483648
+        public void AddOrder_InvalidOrder_ExceptArgumentException(int id, double price, string expectedErrorMsg)
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            DateTime orderDate = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat);
+            List<OrderBeer> orderBeers = new List<OrderBeer> { new OrderBeer { BeerID = 1 } };
+
+            Order order = new Order
+            {
+                ID = id,
+                AccumulatedPrice = price,
+                Customer = customer,
+                OrderCreated = orderDate,
+                OrderBeers = orderBeers
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateOrder(order));
+
+            Assert.Equal(expectedErrorMsg, ex.Message);
+        }
+
+        [Fact]
+        public void AddOrder_InvalidOrderCustomerNull_ExceptArgumentException()
+        {
+            // arrange
+            Customer customer = null;
+            DateTime orderDate = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat);
+            List<OrderBeer> orderBeers = new List<OrderBeer> { new OrderBeer { BeerID = 1 } };
+
+            Order order = new Order
+            {
+                ID = 1,
+                AccumulatedPrice = 49.95,
+                Customer = customer,
+                OrderCreated = orderDate,
+                OrderBeers = orderBeers
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateOrder(order));
+
+            Assert.Equal("Invalid customer", ex.Message);
+        }
+
+        [Fact]
+        public void AddOrder_InvalidOrderNewDate_ExceptArgumentException()
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            DateTime orderDate = new DateTime();
+            List<OrderBeer> orderBeers = new List<OrderBeer> { new OrderBeer { BeerID = 1 } };
+
+            Order order = new Order
+            {
+                ID = 1,
+                AccumulatedPrice = 49.95,
+                Customer = customer,
+                OrderCreated = orderDate,
+                OrderBeers = orderBeers
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateOrder(order));
+
+            Assert.Equal("No order attached", ex.Message);
+        }
+
+        [Fact]
+        public void AddOrder_InvalidOrderListEmplty_ExceptArgumentException()
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            DateTime orderDate = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat);
+            List<OrderBeer> orderBeers = new List<OrderBeer> {};
+
+            Order order = new Order
+            {
+                ID = 1,
+                AccumulatedPrice = 49.95,
+                Customer = customer,
+                OrderCreated = orderDate,
+                OrderBeers = orderBeers
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateOrder(order));
+
+            Assert.Equal("Can not process order with no products", ex.Message);
+        }
+
+        [Fact]
+        public void AddOrder_InvalidOrderListNull_ExceptArgumentException()
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+            DateTime orderDate = DateTime.Parse("30-03-2012", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat);
+            List<OrderBeer> orderBeers = null;
+
+            Order order = new Order
+            {
+                ID = 1,
+                AccumulatedPrice = 49.95,
+                Customer = customer,
+                OrderCreated = orderDate,
+                OrderBeers = orderBeers
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateOrder(order));
+
+            Assert.Equal("Can not process order with no products", ex.Message);
+        }
 
     }
 }
