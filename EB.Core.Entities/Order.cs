@@ -8,9 +8,8 @@ namespace EB.Core.Entities
     {
         public int ID { get; set; }
         public DateTime OrderCreated { get; set; }
-        public DateTime OrderSent { get; set; }
         public double AccumulatedPrice { get; set; }
         public Customer Customer { get; set; }
-        public List<Beer> Beers { get; set; }
+        public List<OrderBeer> OrderBeers { get; set; }
     }
 }

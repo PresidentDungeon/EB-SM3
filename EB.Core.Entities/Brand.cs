@@ -8,7 +8,6 @@ namespace EB.Core.Entities
     {
         public int ID { get; set; }
         public string BrandName { get; set; }
-        // public string BrandDescription { get; set; }
         public List<Beer> Beers { get; set; }
     }
 }
