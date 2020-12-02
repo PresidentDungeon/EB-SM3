@@ -86,18 +86,7 @@ namespace EB.UnitTests
             new OrderService(repoMock.Object, validatorMock.Object).Should().BeAssignableTo<IOrderService>();
         }
 
-        //[Fact]
-        //public void OrderServiceValidate_ShouldValidateOrderWithOrderParameter_Once()
-        //{
-        //    // arrange
-        //    OrderService service = null;
-        //    Order order = new Order { ID = 1 };
-
-        //    // act + assert
-        //    service = new OrderService(repoMock.Object, validatorMock.Object);
-        //    service.ValidateOrder(order);
-        //    validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
-        //}
+        
 
         [Theory]
         [InlineData(1)]
@@ -159,21 +148,7 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.ReadOrderById(It.Is<int>(ID => ID == order1.ID)), Times.Once);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void GetOrderById_InvalidId_ExpectArgumentException(int ID)
-        {
-            // arrange
-            OrderService service = new OrderService(repoMock.Object, validatorMock.Object);
-
-            // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.GetOrderById(ID));
-
-            Assert.Equal("Incorrect ID entered", ex.Message);
-            repoMock.Verify(repo => repo.ReadOrderById(It.Is<int>(id => id == ID)), Times.Never);
-        }
-
+       
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
@@ -201,69 +176,9 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.ReadAllOrders(), Times.Once);
         }
 
-        [Fact]
-        public void RemoveOrder_ValidExistingOrder()
-        {
-            // arrange
-            Order order = new Order()
-            {
-                ID = 1,
-                OrderCreated = DateTime.Parse("30-03-2020", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
-                OrderSent = DateTime.Parse("30-05-2020", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
-                AccumulatedPrice = 256.5
-            };
+       
 
-            orderDatabase.Add(order.ID, order);
-
-            OrderService service = new OrderService(repoMock.Object, validatorMock.Object);
-
-            // act
-            service.DeleteOrder(order.ID);
-
-            // assert
-            repoMock.Verify(repo => repo.ReadOrderById(It.Is<int>(ID => ID == order.ID)), Times.Once);
-            repoMock.Verify(repo => repo.DeleteOrderInRepo(It.Is<int>(ID => ID == order.ID)), Times.Once);
-            Assert.Null(repoMock.Object.ReadOrderById(order.ID));
-        }
-
-        [Fact]
-        public void RemoveOrder_OrderDoesNotExist_ExpectArgumentException()
-        {
-            // arrange
-            OrderService service = new OrderService(repoMock.Object, validatorMock.Object);
-
-            Order order = new Order()
-            {
-                ID = 1,
-                OrderCreated = DateTime.Parse("30-11-2020", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
-                OrderSent = DateTime.Parse("01-12-2020", CultureInfo.GetCultureInfo("da-DK").DateTimeFormat),
-                AccumulatedPrice = 149.95
-            };
-
-            // act + assert
-            var ex = Assert.Throws<InvalidOperationException>(() => service.DeleteOrder(order.ID));
-
-            // assert
-            Assert.Equal("No brand with such ID found", ex.Message);
-            repoMock.Verify(repo => repo.ReadOrderById(It.Is<int>(ID => ID == order.ID)), Times.Once);
-            repoMock.Verify(repo => repo.DeleteOrderInRepo(It.Is<int>(ID => ID == order.ID)), Times.Never);
-        }
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void RemoveOrder_IncorrectID_ExpectArgumentException(int ID)
-        {
-            // arrange
-            OrderService service = new OrderService(repoMock.Object, validatorMock.Object);
-
-            // act + assert
-            var ex = Assert.Throws<ArgumentException>(() => service.DeleteOrder(ID));
-
-            // assert
-            Assert.Equal("Incorrect ID entered", ex.Message);
-            repoMock.Verify(repo => repo.DeleteOrderInRepo(It.Is<int>(id => id == ID)), Times.Never);
-            repoMock.Verify(repo => repo.ReadOrderById(It.Is<int>(id => id == ID)), Times.Never);
-        }
+       
+       
     }
 }

@@ -30,7 +30,21 @@ namespace EB.Core.ApplicationServices.Validators
 
         public void ValidateOrder(Order order)
         {
-            throw new NotImplementedException();
+            if (order == null) {
+                throw new ArgumentException("Order can not be null");
+            }
+            if (order.ID < 0)
+            {
+                throw new ArgumentException("Invalid ID");
+            }
+            if (order.AccumulatedPrice < 0)
+            {
+                throw new ArgumentException("Invalid Price");
+            }
+            if (order.Beers.Length < 0)
+            {
+                throw new ArgumentException("Order has to have Items to buy");
+            }
         }
 
         public void ValidateType(BeerType type)
