@@ -80,6 +80,11 @@ namespace EB.Infrastructure.Data
             return ctx.Beers.Include(beers => beers.Type).Include(beer => beer.Brand).FirstOrDefault(x => x.ID == id);
         }
 
+        public Beer ReadSimpleBeerByID(int id)
+        {
+            return ctx.Beers.FirstOrDefault(x => x.ID == id);
+        }
+
         public Beer UpdateBeerInRepo(Beer beerUpdate)
         {
             ctx.Attach(beerUpdate).State = EntityState.Modified;
@@ -88,6 +93,17 @@ namespace EB.Infrastructure.Data
             ctx.SaveChanges();
 
             return ReadBeerById(beerUpdate.ID);
+        }
+
+        public void UpdateBeerRange(List<Beer> beers)
+        {
+            foreach (Beer beer in beers)
+            {
+                ctx.Attach(beer).State = EntityState.Modified;
+                ctx.Entry(beer).Reference(product => product.Type).IsModified = false;
+                ctx.Entry(beer).Reference(product => product.Brand).IsModified = false;
+                ctx.SaveChanges();
+            }
         }
 
 
