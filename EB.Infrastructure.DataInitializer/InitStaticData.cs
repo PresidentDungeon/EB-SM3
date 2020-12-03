@@ -108,7 +108,7 @@ namespace EB.Infrastructure.DataInitializer
             BeerService.CreateBeer(witch);
             BeerService.CreateBeer(witchGinger);
 
-            UserService.AddUser(UserService.CreateUser("SeglerHans", "kodeord", "Admin"));
+            UserService.AddUser(UserService.CreateUser("SeglerHans", "password", "Admin"));
             UserService.AddUser(UserService.CreateUser("Kutterjørgen", "lasagne28", "User"));
 
         }
