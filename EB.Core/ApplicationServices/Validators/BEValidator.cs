@@ -77,9 +77,9 @@ namespace EB.Core.ApplicationServices.Validators
             {
                 throw new ArgumentException("Username must be be between 8-24 characters");
             }
-            if (string.IsNullOrEmpty(password) || password.Length < 6)
+            if (string.IsNullOrEmpty(password) || password.Length < 8)
             {
-                throw new ArgumentException("Password must be minimum 6 characters");
+                throw new ArgumentException("Password must be minimum 8 characters");
             }
             if (string.IsNullOrEmpty(userRole))
             {
