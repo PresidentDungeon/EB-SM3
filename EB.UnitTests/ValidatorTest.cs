@@ -340,16 +340,15 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(null, "kodeord", "user", "Username must be be between 8-24 characters")]                        // invalid username: null
-        [InlineData("", "kodeord", "user", "Username must be be between 8-24 characters")]                          // invalid username: ""
-        [InlineData("Jespern", "kodeord", "user", "Username must be be between 8-24 characters")]                   // invalid username: under 8 characters
-        [InlineData("JespernJespernJespernJesp", "kodeord", "user", "Username must be be between 8-24 characters")] // invalid username: over 24 characters
-        [InlineData("Andreasen", null, "user", "Password must be minimum 6 characters")]                            // invalid password: null
-        [InlineData("Andreasen", "", "user", "Password must be minimum 6 characters")]                              // invalid password: ""
-        [InlineData("Andreasen", "kode", "user", "Password must be minimum 6 characters")]                          // invalid password: under 6 characters
-
-        [InlineData("Andreasen", "kodeord", null, "Userrole can't be null or empty")]                               // invalid userrole: null
-        [InlineData("Andreasen", "kodeord", "", "Userrole can't be null or empty")]                                 // invalid userrole: ""
+        [InlineData(null, "password", "user", "Username must be be between 8-24 characters")]                        // invalid username: null
+        [InlineData("", "password", "user", "Username must be be between 8-24 characters")]                          // invalid username: ""
+        [InlineData("Jespern", "password", "user", "Username must be be between 8-24 characters")]                   // invalid username: under 8 characters
+        [InlineData("JespernJespernJespernJesp", "password", "user", "Username must be be between 8-24 characters")] // invalid username: over 24 characters
+        [InlineData("Andreasen", null, "user", "Password must be minimum 8 characters")]                            // invalid password: null
+        [InlineData("Andreasen", "", "user", "Password must be minimum 8 characters")]                              // invalid password: ""
+        [InlineData("Andreasen", "kode", "user", "Password must be minimum 8 characters")]                          // invalid password: under 8 characters
+        [InlineData("Andreasen", "password", null, "Userrole can't be null or empty")]                               // invalid userrole: null
+        [InlineData("Andreasen", "password", "", "Userrole can't be null or empty")]                                 // invalid userrole: ""
         public void CreateUser_InvalidUser_ExceptArgumentException(string username, string password, string userrole, string expectedErrorMsg)
         {
             // arrange
