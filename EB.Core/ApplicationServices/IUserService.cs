@@ -23,6 +23,8 @@ namespace EB.Core.ApplicationServices
 
         User UpdateUser(User user);
 
+        User UpdatePassword(int id, UpdatePasswordModel updateModel);
+
         User DeleteUser(int ID);
     }
 }

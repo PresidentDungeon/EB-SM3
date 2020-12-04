@@ -25,7 +25,7 @@ namespace EB.RestAPI.Controllers
         [ProducesResponseType(typeof(Order), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public ActionResult<Beer> CreateBeer([FromBody] Order order)
+        public ActionResult<Order> CreateOrder([FromBody] Order order)
         {
             try
             {
