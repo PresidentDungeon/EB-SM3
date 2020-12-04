@@ -46,6 +46,9 @@ namespace EB.Infrastructure.Security
             }
         }
 
+
+
+
         public string GenerateJWTToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(SecretBytes);

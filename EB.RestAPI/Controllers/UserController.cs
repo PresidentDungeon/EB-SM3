@@ -87,6 +87,24 @@ namespace EB.RestAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPut("password/{ID}")]
+        [ProducesResponseType(typeof(User), 202)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult<User> UpdatePasswordByID(int id, [FromBody] UpdatePasswordModel updateModel)
+        {
+            try
+            {
+                User updatedUser = UserService.UpdatePassword(id, updateModel);
+                return (updatedUser != null) ? Accepted(updatedUser) : StatusCode(500, $"Server error updating user with Id: {id}");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
         #endregion
 
         #region Delete
