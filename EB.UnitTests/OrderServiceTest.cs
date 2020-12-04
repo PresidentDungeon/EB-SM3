@@ -4,6 +4,7 @@ using EB.Core.DomainServices;
 using EB.Core.Entities;
 using FluentAssertions;
 using Moq;
+using ProductShop.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -37,8 +38,13 @@ namespace EB.UnitTests
             repoMock.Setup(repo => repo.AddOrder(It.IsAny<Order>())).Callback<Order>(order => orderDatabase.Add(order.ID, order));
             repoMock.Setup(repo => repo.DeleteOrder(It.IsAny<int>())).Callback<int>(id => orderDatabase.Remove(id));
             repoMock.Setup(repo => repo.ReadAllOrders()).Returns(() => orderDatabase.Values);
-            repoMock.Setup(repo => repo.ReadAllOrdersByCustomer(It.IsAny<int>())).Returns<int>((id) => orderDatabase.Values.Where(o => o.Customer.ID == id));
+
+
+            repoMock.Setup(repo => repo.ReadAllOrdersByCustomer(It.IsAny<int>(), It.IsAny<Filter>())).Callback<int, Filter>(
+            (id, fil) => {int userID = id; Filter filter = fil;}).Returns((int id, Filter filter) => { List<Order> orders = orderDatabase.Values.Where(o => o.Customer.ID == id).ToList(); return new FilterList<Order> { totalItems = orders.Count, List = orders }; });
+
             repoMock.Setup(repo => repo.ReadOrderByID(It.IsAny<int>())).Returns<int>((id) => orderDatabase.ContainsKey(id) ? orderDatabase[id] : null);
+            repoMock.Setup(repo => repo.ReadOrderByIDUser(It.IsAny<int>(), It.IsAny<int>())).Returns((int orderID, int userID) => { return orderDatabase.Values.Where(order => order.Customer.ID == userID).FirstOrDefault(order => order.ID == orderID); });
 
             customerMock.Setup(repo => repo.ReadCustomerById(It.IsAny<int>())).Returns<int>((id) => customerDatabase.ContainsKey(id) ? customerDatabase[id] : null);
             beerMock.Setup(repo => repo.ReadSimpleBeerByID(It.IsAny<int>())).Returns<int>((id) => beerDatabase.ContainsKey(id) ? beerDatabase[id] : null);
@@ -426,6 +432,70 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.ReadOrderByID(It.Is<int>(ID => ID == order1.ID)), Times.Once);
         }
 
+        [Fact]
+        public void GetOrderByIdValidateUser_OrderExists()
+        {
+            // arrange
+            Customer customer = new Customer { ID = 1 };
+
+            Order order = new Order { ID = 1, Customer = customer};
+            orderDatabase.Add(order.ID, order);
+
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
+
+            // act
+            var result = service.ReadOrderByIDUser(order.ID, customer.ID);
+
+            // assert
+            Assert.Equal(order, result);
+            repoMock.Verify(repo => repo.ReadOrderByIDUser(It.Is<int>(ID => ID == order.ID), It.Is<int>(userID => userID == customer.ID)), Times.Once);
+        }
+
+        [Fact]
+        public void GetOrderById_OrderExistUserNotValid_ExpectNull()
+        {
+            // arrange
+            Customer customer1 = new Customer { ID = 1 };
+            Customer customer2 = new Customer { ID = 2 };
+
+            var order = new Order { ID = 1 , Customer = customer2};
+
+            orderDatabase.Add(order.ID, order);
+
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object); ;
+
+            // act
+            var result = service.ReadOrderByIDUser(order.ID, customer1.ID);
+
+            // assert
+            Assert.Null(result);
+            repoMock.Verify(repo => repo.ReadOrderByIDUser(It.Is<int>(ID => ID == order.ID), It.Is<int>(userID => userID == customer1.ID)), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(-1, 2)]
+        [InlineData(1, 0)]
+        [InlineData(1, -1)]
+        public void GetOrderById_OrderIDIsInvalid_ExpectArgumentException(int orderID, int userID)
+        {
+            // arrange
+            Customer customer1 = new Customer { ID = 1 };
+            Customer customer2 = new Customer { ID = 2 };
+
+            var order = new Order { ID = 1, Customer = customer2 };
+
+            orderDatabase.Add(order.ID, order);
+
+            OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object); ;
+
+            // act
+            var ex = Assert.Throws<ArgumentException>(() => service.ReadOrderByIDUser(orderID, userID));
+
+            // assert
+            Assert.Equal("Incorrect ID entered", ex.Message);
+            repoMock.Verify(repo => repo.ReadOrderByIDUser(It.Is<int>(ID => ID == order.ID), It.Is<int>(userID => userID == customer1.ID)), Times.Never);
+        }
 
         [Theory]
         [InlineData(0)]
@@ -475,11 +545,11 @@ namespace EB.UnitTests
             OrderService service = new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object);
 
             // act
-            var result = service.ReadAllOrdersByCustomer(customer2.ID);
+            var result = service.ReadAllOrdersByCustomer(customer2.ID, new Filter { });
 
             // assert
-            Assert.Equal(expected, result);
-            repoMock.Verify(repo => repo.ReadAllOrdersByCustomer(It.Is<int>(ID => ID == customer2.ID)), Times.Once);
+            Assert.Equal(expected, result.List);
+            repoMock.Verify(repo => repo.ReadAllOrdersByCustomer(It.Is<int>(ID => ID == customer2.ID), It.IsAny<Filter>()), Times.Once);
         }
 
         [Fact]

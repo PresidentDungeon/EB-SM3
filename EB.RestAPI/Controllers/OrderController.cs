@@ -4,6 +4,7 @@ using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
+using ProductShop.Core.Entities;
 
 namespace EB.RestAPI.Controllers
 {
@@ -91,15 +92,36 @@ namespace EB.RestAPI.Controllers
             }
         }
 
+        [HttpGet("{OrderID}/{UserID}")]
+        [ProducesResponseType(typeof(Order), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult<Order> GetByIDUser(int orderID, int userID)
+        {
+            try
+            {
+                Order order = OrderService.ReadOrderByIDUser(orderID, userID);
+                if (order != null)
+                {
+                    return Ok(order);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error loading order with ID: {orderID} as user with {userID}\nPlease try again later.");
+            }
+        }
+
         [HttpGet("customer-{ID}")]
         [ProducesResponseType(typeof(IEnumerable<Order>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<IEnumerable<Order>> GetOrderByCustomerID(int ID)
+        public ActionResult<FilterList<Order>> GetOrderByCustomerID(int ID, [FromQuery] Filter filter)
         {
             try
             {
-                return Ok(OrderService.ReadAllOrdersByCustomer(ID));
+                return Ok(OrderService.ReadAllOrdersByCustomer(ID, filter));
             }
             catch (InvalidDataException ex)
             {
