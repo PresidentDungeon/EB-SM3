@@ -1,7 +1,9 @@
 ﻿using EB.Core.DomainServices;
 using EB.Core.Entities;
+using ProductShop.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -51,13 +53,18 @@ namespace EB.Core.ApplicationServices.Impl
             return OrderRepository.ReadAllOrders().ToList();
         }
 
-        public List<Order> ReadAllOrdersByCustomer(int id)
+        public FilterList<Order> ReadAllOrdersByCustomer(int id, Filter filter)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("Incorrect ID entered");
             }
-            return OrderRepository.ReadAllOrdersByCustomer(id).ToList();
+            if (filter.CurrentPage < 0 || filter.ItemsPrPage < 0)
+            {
+                throw new InvalidDataException("Page or items per page must be above zero");
+            }
+
+            return OrderRepository.ReadAllOrdersByCustomer(id, filter);
         }
 
         public Order ReadOrderByID(int id)
@@ -68,6 +75,16 @@ namespace EB.Core.ApplicationServices.Impl
             }
 
             return OrderRepository.ReadOrderByID(id);
+        }
+
+        public Order ReadOrderByIDUser(int orderID, int userID)
+        {
+            if (orderID <= 0 || userID <= 0)
+            {
+                throw new ArgumentException("Incorrect ID entered");
+            }
+
+            return OrderRepository.ReadOrderByIDUser(orderID, userID);
         }
 
         public Order DeleteOrder(int id)
