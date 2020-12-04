@@ -4,6 +4,7 @@ using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
+using ProductShop.Core.Entities;
 
 namespace EB.RestAPI.Controllers
 {
@@ -48,7 +49,7 @@ namespace EB.RestAPI.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Beer>), 200)]
         [ProducesResponseType(404)] [ProducesResponseType(500)]
-        public ActionResult<IEnumerable<Beer>> Get([FromQuery] Filter filter)
+        public ActionResult<FilterList<Beer>> Get([FromQuery] Filter filter)
         {
             try
             {
