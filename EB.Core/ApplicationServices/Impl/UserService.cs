@@ -101,7 +101,7 @@ namespace EB.Core.ApplicationServices.Impl
 
             return UserRepository.GetUserByID(ID);
         }
-
+        
         public User UpdateUser(User user)
         {
             if (user == null)
@@ -116,6 +116,20 @@ namespace EB.Core.ApplicationServices.Impl
                 throw new InvalidOperationException("No user with such ID found");
             }
 
+            return UserRepository.UpdateUser(user);
+        }
+
+        public User UpdatePassword(int id, UpdatePasswordModel updateModel)
+        {
+            User user = GetUserByID(id);
+            if(user == null) { throw new ArgumentException("User with such ID does not exist"); }
+            if(updateModel == null || string.IsNullOrEmpty(updateModel.NewPassword) || string.IsNullOrEmpty(updateModel.OldPassword)){throw new ArgumentException("Invalid passwords entered"); }
+
+            Validator.ValidateCreateUser(user.Username, updateModel.NewPassword, user.UserRole);
+            AuthenticationHelper.ValidateLogin(user, new LoginInputModel { Username = user.Username, Password = updateModel.OldPassword });
+
+            user.Salt = AuthenticationHelper.GenerateSalt();
+            user.Password = AuthenticationHelper.GenerateHash(updateModel.NewPassword, user.Salt);
             return UserRepository.UpdateUser(user);
         }
 

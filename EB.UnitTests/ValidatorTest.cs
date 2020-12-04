@@ -277,14 +277,15 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(-1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Invalid ID")]                            // invalid id: -1
+        [InlineData(-1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Invalid ID")]                           // invalid id: -1
         [InlineData(int.MinValue, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Invalid ID")]                 // invalid id: -2147483648
         [InlineData(1, null, "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Firstname can not be empty")]                 // invalid firstname: null
         [InlineData(1, "", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Firstname can not be empty")]                   // invalid firstname: ""
         [InlineData(1, "Karsten", null, "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Lastname can not be empty")]                  // invalid lastname: null
         [InlineData(1, "Karsten", "", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Lastname can not be empty")]                    // invalid lastname: ""
-        [InlineData(1, "Karsten", "Clausen", "KC@gmail.com", null, "Skolegade 2", 6771, "Esbjerg", "Phonenumber can not be empty")]                       // invalid phonenumber: null
-        [InlineData(1, "Karsten", "Clausen", "KC@gmail.com", "", "Skolegade 2", 6771, "Esbjerg", "Phonenumber can not be empty")]                         // invalid phonenumber: ""
+        [InlineData(1, "Karsten", "Clausen", null, "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Email can not be empty")]                          // invalid email: null
+        [InlineData(1, "Karsten", "Clausen", "", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Email can not be empty")]                            // invalid: ""
+        [InlineData(1, "Karsten", "Clausen", "Carsten", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg", "Email must be a valid email")]                 // invalid: "Carsten"
         [InlineData(1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", null, 6771, "Esbjerg", "Streetname can not be empty")]                    // invalid streetname: null
         [InlineData(1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "", 6771, "Esbjerg", "Streetname can not be empty")]                      // invalid streetname: ""
         [InlineData(1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", -1, "Esbjerg", "Postalcode must be between 0-9999")]       // invalid postalcode: -1
@@ -316,8 +317,65 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(1, "Karsten", "Clausen", "KC@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg")]
-        [InlineData(2, "Kirsten", "Clausen", null, "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg")]
+        [InlineData("Carsten")]
+        [InlineData("Carsten@")]
+        [InlineData("Carsten@gmail")]
+        [InlineData("Carsten@hotmail")]
+        [InlineData("Carsten@@gmail.com")]
+        [InlineData("@Carsten@gmail.com")]
+        [InlineData("Carsten@gmail!.com")]
+        [InlineData("Carsten.com")]
+        public void AddCustomer_InvalidEmail_ExceptArgumentException(string email)
+        {
+            // arrange
+            Customer customer = new Customer
+            {
+                ID = 1,
+                FirstName = "Carsten",
+                LastName = "Hansen",
+                Email = email,
+                PhoneNumber = "76 117 117",
+                StreetName = "Rolf Krakesvej 10",
+                PostalCode = 3600,
+                CityName = "Frederikssund"
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => validator.ValidateCustomer(customer));
+
+            Assert.Equal("Email must be a valid email", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("Carsten@gmail.com")]
+        [InlineData("Kristian@hotmail.se")]
+        [InlineData("Emil.Larsen@gmail.dk")]
+        public void AddCustomer_ValidEmail(string email)
+        {
+            // arrange
+            Customer customer = new Customer
+            {
+                ID = 1,
+                FirstName = "Carsten",
+                LastName = "Hansen",
+                Email = email,
+                PhoneNumber = "76 117 117",
+                StreetName = "Rolf Krakesvej 10",
+                PostalCode = 3600,
+                CityName = "Frederikssund"
+            };
+
+            IValidator validator = new BEValidator();
+
+            // act + assert
+            validator.ValidateCustomer(customer);
+        }
+
+        [Theory]
+        [InlineData(1, "Karsten", "Clausen", "KC@gmail.com", "", "Skolegade 2", 6771, "Esbjerg")]
+        [InlineData(2, "Kirsten", "Clausen", "Karsten.Hansen@gmail.com", "+45 20 20 20 90", "Skolegade 2", 6771, "Esbjerg")]
         public void AddCustomer_ValidCustomer(int id, string firstName, string lastName, string email, string phoneNumber, string streetName, int postalCode, string cityName)
         {
             // arrange

@@ -1,11 +1,15 @@
 ﻿using EB.Core.Entities;
 using EB.Core.Entities.Security;
 using System;
+using System.Text.RegularExpressions;
 
 namespace EB.Core.ApplicationServices.Validators
 {
     public class BEValidator : IValidator
     {
+
+        Regex emailRegex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*" + "@" + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$");
+
         public void ValidateBeer(Beer beer)
         {
             if(beer == null)
@@ -130,9 +134,13 @@ namespace EB.Core.ApplicationServices.Validators
             {
                 throw new ArgumentException("Lastname can not be empty");
             }
-            if (string.IsNullOrEmpty(customer.PhoneNumber))
+            if (string.IsNullOrEmpty(customer.Email))
             {
-                throw new ArgumentException("Phonenumber can not be empty");
+                throw new ArgumentException("Email can not be empty");
+            }
+            if (!emailRegex.IsMatch(customer.Email))
+            {
+                throw new ArgumentException("Email must be a valid email");
             }
             if (string.IsNullOrEmpty(customer.StreetName))
             {

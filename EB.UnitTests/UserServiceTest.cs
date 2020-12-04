@@ -517,6 +517,107 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.UpdateUser(It.Is<User>(u => u == user)), Times.Never);
         }
 
+        [Theory]
+        [InlineData(0, "password", "updatedPassword", "Incorrect ID entered")]
+        [InlineData(-1, "password", "updatedPassword", "Incorrect ID entered")]
+        [InlineData(int.MinValue, "password", "updatedPassword", "Incorrect ID entered")]
+        [InlineData(1, "", "updatedPassword", "Invalid passwords entered")]
+        [InlineData(1, null, "updatedPassword", "Invalid passwords entered")]
+        [InlineData(1, "password", "", "Invalid passwords entered")]
+        [InlineData(1, "password", null, "Invalid passwords entered")]
+        public void UpdateUserPassword_InvalidPasswordModel_ExpectArgumentException(int id, string oldPassword, string newPassword, string errorExpected)
+        {
+            // arrange
+            User user = new User()
+            {
+                ID = id,
+                Username = "Carlson",
+                UserRole = "user"
+            };
+
+            UpdatePasswordModel model = new UpdatePasswordModel()
+            {
+                OldPassword = oldPassword,
+                NewPassword = newPassword
+            };
+
+            userDatabase.Add(user.ID, user);
+
+
+            UserService service = new UserService(repoMock.Object, authMock.Object, validatorMock.Object);
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => service.UpdatePassword(id, model));
+
+            Assert.Equal(errorExpected, ex.Message);
+            validatorMock.Verify(validator => validator.ValidateCreateUser(It.Is<string>(un => un == user.Username), It.Is<string>(pw => pw == newPassword), It.Is<string>(ur => ur == user.UserRole)), Times.Never);
+            authMock.Verify(validator => validator.ValidateLogin(It.Is<User>(u => u == user), It.IsAny<LoginInputModel>()), Times.Never);
+            repoMock.Verify(repo => repo.UpdateUser(It.Is<User>(u => u == user)), Times.Never);
+        }
+
+        [Fact]
+        public void UpdateUserPassword_NotStoredUser_ExpectArgumentException()
+        {
+            // arrange
+            User user = new User()
+            {
+                ID = 1,
+                Username = "Carlson",
+                UserRole = "user"
+            };
+
+            UpdatePasswordModel model = new UpdatePasswordModel()
+            {
+                OldPassword = "password",
+                NewPassword = "NewPassword"
+            };
+
+            UserService service = new UserService(repoMock.Object, authMock.Object, validatorMock.Object);
+
+            // act + assert
+            var ex = Assert.Throws<ArgumentException>(() => service.UpdatePassword(user.ID, model));
+
+            Assert.Equal("User with such ID does not exist", ex.Message);
+
+            validatorMock.Verify(validator => validator.ValidateCreateUser(It.Is<string>(un => un == user.Username), It.Is<string>(pw => pw == model.NewPassword), It.Is<string>(ur => ur == user.UserRole)), Times.Never);
+            repoMock.Verify(repo => repo.GetUserByID(It.Is<int>(ID => ID == user.ID)), Times.Once);
+            authMock.Verify(validator => validator.ValidateLogin(It.Is<User>(u => u == user), It.IsAny<LoginInputModel>()), Times.Never);
+            repoMock.Verify(repo => repo.UpdateUser(It.Is<User>(u => u == user)), Times.Never);
+        }
+
+
+        [Theory]
+        [InlineData(1, "password", "updatedPassword")]
+        [InlineData(2, "password", "updatedPassword")]
+        public void UpdateUserPassword_ValidPasswordModel(int id, string oldPassword, string newPassword)
+        {
+            // arrange
+            User user = new User()
+            {
+                ID = id,
+                Username = "Carlson",
+                UserRole = "user"
+            };
+
+            UpdatePasswordModel model = new UpdatePasswordModel()
+            {
+                OldPassword = oldPassword,
+                NewPassword = newPassword
+            };
+
+            userDatabase.Add(user.ID, user);
+
+
+            UserService service = new UserService(repoMock.Object, authMock.Object, validatorMock.Object);
+
+            // act + assert
+            service.UpdatePassword(id, model);
+
+            validatorMock.Verify(validator => validator.ValidateCreateUser(It.Is<string>(un => un == user.Username), It.Is<string>(pw => pw == newPassword), It.Is<string>(ur => ur == user.UserRole)), Times.Once);
+            authMock.Verify(validator => validator.ValidateLogin(It.Is<User>(u => u == user), It.IsAny<LoginInputModel>()), Times.Once);
+            repoMock.Verify(repo => repo.UpdateUser(It.Is<User>(u => u == user)), Times.Once);
+        }
+
         [Fact]
         public void RemoveUser_ValidExistingUser()
         {
