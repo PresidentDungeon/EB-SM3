@@ -9,10 +9,11 @@ namespace EB.Core.ApplicationServices
     public interface IOrderService
     {
         Order AddOrder(Order order);
-        List<Order> ReadAllOrders();
+        FilterList<Order> ReadAllOrders(Filter filter);
         FilterList<Order> ReadAllOrdersByCustomer(int id, Filter filter);
         Order ReadOrderByID(int id);
         Order ReadOrderByIDUser(int orderID, int userID);
+        Order UpdateOrderStatus(int orderID);
         Order DeleteOrder(int id);
     }
 }
