@@ -15,13 +15,15 @@ namespace EB.Core.ApplicationServices.Impl
         private readonly IBeerRepository BeerRepository;
         private readonly ICustomerRepository CustomerRepository;
         private readonly IValidator Validator;
+        private readonly IEmailHelper EmailHelper;
 
-        public OrderService(IOrderRepository orderRepository, IBeerRepository beerRepository, ICustomerRepository customerRepository, IValidator validator)
+        public OrderService(IOrderRepository orderRepository, IBeerRepository beerRepository, ICustomerRepository customerRepository, IValidator validator, IEmailHelper emailHelper)
         {
             this.OrderRepository = orderRepository ?? throw new NullReferenceException("Repository can't be null");
             this.BeerRepository = beerRepository ?? throw new NullReferenceException("Repository can't be null");
             this.CustomerRepository = customerRepository ?? throw new NullReferenceException("Repository can't be null");
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
+            this.EmailHelper = emailHelper ?? throw new NullReferenceException("Email helper can't be null");
         }
 
         public Order AddOrder(Order order)
@@ -45,12 +47,19 @@ namespace EB.Core.ApplicationServices.Impl
             BeerRepository.UpdateBeerRange(updatedBeers);
 
             order.AccumulatedPrice = Math.Round(price, 2);
-            return OrderRepository.AddOrder(order);
+            Order addedOrder = OrderRepository.AddOrder(order);
+            EmailHelper.SendVerificationEmail(addedOrder);
+            return addedOrder;
         }
 
-        public List<Order> ReadAllOrders()
+        public FilterList<Order> ReadAllOrders(Filter filter)
         {
-            return OrderRepository.ReadAllOrders().ToList();
+            if (filter.CurrentPage < 0 || filter.ItemsPrPage < 0)
+            {
+                throw new InvalidDataException("Page or items per page must be above zero");
+            }
+
+            return OrderRepository.ReadAllOrders(filter);
         }
 
         public FilterList<Order> ReadAllOrdersByCustomer(int id, Filter filter)
@@ -85,6 +94,21 @@ namespace EB.Core.ApplicationServices.Impl
             }
 
             return OrderRepository.ReadOrderByIDUser(orderID, userID);
+        }
+
+        public Order UpdateOrderStatus(int orderID)
+        {
+            Order order = ReadOrderByID(orderID);
+
+            if (order == null)
+            {
+                throw new InvalidOperationException("No order with such ID found");
+            }
+
+            order.OrderFinished = true;
+
+            EmailHelper.SendConfirmationEmail(order);
+            return OrderRepository.UpdateOrder(order);
         }
 
         public Order DeleteOrder(int id)

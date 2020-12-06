@@ -52,14 +52,14 @@ namespace EB.RestAPI.Controllers
 
         #region Read
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Order>), 200)]
+        [ProducesResponseType(typeof(FilterList<Order>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<IEnumerable<Order>> Get()
+        public ActionResult<IEnumerable<Order>> Get([FromQuery] Filter filter)
         {
             try
             {
-                return Ok(OrderService.ReadAllOrders());
+                return Ok(OrderService.ReadAllOrders(filter));
             }
             catch (InvalidDataException ex)
             {
@@ -130,6 +130,34 @@ namespace EB.RestAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "Couldn't load customers orders. Please try again later.");
+            }
+        }
+        #endregion
+
+        #region Update
+        [HttpPut("{ID}")]
+        [ProducesResponseType(typeof(Order), 202)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult<Order> UpdateOrderStatus(int id)
+        {
+            try
+            {
+                Order order = OrderService.UpdateOrderStatus(id);
+                return (order != null) ? Accepted(order) : StatusCode(500, $"Server error updating order with Id: {id}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidDataException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error updating order with Id: {id}");
             }
         }
         #endregion

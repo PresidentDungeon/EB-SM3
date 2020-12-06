@@ -15,5 +15,7 @@ namespace EB.Core.Entities
         public string ProductType { get; set; }
 
         public int BeerTypeID { get; set; }
+
+        public Boolean OrderFinished { get; set; }
     }
 }
