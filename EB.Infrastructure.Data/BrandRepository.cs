@@ -10,13 +10,16 @@ namespace EB.Infrastructure.Data
 {
     public class BrandRepository : IBrandRepository
     {
+        #region Dependency Injection
         private EBContext ctx;
 
         public BrandRepository(EBContext ctx)
         {
             this.ctx = ctx;
         }
+        #endregion
 
+        #region Create Data
         public Brand AddBrand(Brand brand)
         {
             ctx.Attach(brand).State = EntityState.Added;
@@ -24,7 +27,9 @@ namespace EB.Infrastructure.Data
 
             return brand;
         }
+        #endregion
 
+        #region Read Data
         public IEnumerable<Brand> ReadBrands()
         {
             return ctx.Brands.AsEnumerable();
@@ -67,19 +72,24 @@ namespace EB.Infrastructure.Data
         {
             return ctx.Brands.FirstOrDefault(x => x.ID == id);
         }
+        #endregion
 
+        #region Update Data
         public Brand UpdateBrandInRepo(Brand brand)
         {
             ctx.Attach(brand).State = EntityState.Modified;
             ctx.SaveChanges();
             return brand;
         }
+        #endregion
 
+        #region Delete Data
         public Brand DeleteBrandInRepo(int id)
         {
             var removedBrand = ctx.Brands.Remove(ReadBrandById(id));
             ctx.SaveChanges();
             return removedBrand.Entity;
         }
+        #endregion
     }
 }

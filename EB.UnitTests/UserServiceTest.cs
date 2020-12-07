@@ -16,6 +16,7 @@ namespace EB.UnitTests
 {
     public class UserServiceTest
     {
+        #region Mock Setup
         private SortedDictionary<int, User> userDatabase;
         private Mock<IUserRepository> repoMock;
         private Mock<IAuthenticationHelper> authMock;
@@ -34,7 +35,9 @@ namespace EB.UnitTests
             repoMock.Setup(repo => repo.ReadUsers()).Returns(() => userDatabase.Values);
             repoMock.Setup(repo => repo.GetUserByID(It.IsAny<int>())).Returns<int>((id) => userDatabase.ContainsKey(id) ? userDatabase[id] : null);
         }
+        #endregion
 
+        #region UserService Tests
         [Fact]
         public void CreateUserService_UserRepositoryValidatorAndAuthenticationHelperIsNull_ExpectNullReferenceException()
         {
@@ -103,7 +106,9 @@ namespace EB.UnitTests
             // act + assert
             new UserService(repoMock.Object, authMock.Object, validatorMock.Object).Should().BeAssignableTo<IUserService>();
         }
+        #endregion
 
+        #region Login Tests
         [Fact]
         public void UserServiceLogin_LoginWithNullImportModel_ExceptUnauthorizedAccessException()
         {
@@ -171,8 +176,9 @@ namespace EB.UnitTests
             authMock.Verify(auth => auth.ValidateLogin(It.Is<User>(user => user == foundUser), It.Is<LoginInputModel>(lm => lm == model)), Times.Once);
             repoMock.Verify(repo => repo.ReadUsers(), Times.Once);
         }
+        #endregion
 
-
+        #region Token Generation Tests
         [Fact]
         public void UserServiceGenerateJWTToken_WithNullUser_ExceptArgumentException()
         {
@@ -217,7 +223,9 @@ namespace EB.UnitTests
             Assert.Equal("correct login", token);
             authMock.Verify(auth => auth.GenerateJWTToken(It.Is<User>(user => user == foundUser)), Times.Once);
         }
+        #endregion
 
+        #region Validation Tests
         [Fact]
         public void UserServiceValidate_ShouldValidateUserWithParameter_Once()
         {
@@ -233,7 +241,9 @@ namespace EB.UnitTests
             service.ValidateUser(userName, password, userRole);
             validatorMock.Verify(validator => validator.ValidateCreateUser(It.Is<string>(un => un == userName), It.Is<string>(pw => pw == password), It.Is<string>(ur => ur == userRole)), Times.Once);
         }
+        #endregion
 
+        #region Create User Tests
         [Theory]
         [InlineData("Hans", null, null, "password can't be null or empty")]
         [InlineData(null, "", "user", "username can't be null or empty")]
@@ -350,7 +360,9 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.AddUser(It.Is<User>(u => u == user)), Times.Never);
             validatorMock.Verify(validator => validator.ValidateUser(It.Is<User>(u => u == user)), Times.Once);
         }
+        #endregion
 
+        #region Read User Tests
         [Fact]
         public void GetUserById_UserExists()
         {
@@ -429,7 +441,9 @@ namespace EB.UnitTests
             Assert.Equal(expected, result);
             repoMock.Verify(repo => repo.ReadUsers(), Times.Once);
         }
+        #endregion
 
+        #region Update User Tests
         [Theory]
         [InlineData(1, "Kurt")]
         [InlineData(2, "Hans")]
@@ -617,7 +631,9 @@ namespace EB.UnitTests
             authMock.Verify(validator => validator.ValidateLogin(It.Is<User>(u => u == user), It.IsAny<LoginInputModel>()), Times.Once);
             repoMock.Verify(repo => repo.UpdateUser(It.Is<User>(u => u == user)), Times.Once);
         }
+        #endregion
 
+        #region Delete User Tests
         [Fact]
         public void RemoveUser_ValidExistingUser()
         {
@@ -679,5 +695,6 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.DeleteUser(It.Is<int>(id => id == ID)), Times.Never);
             repoMock.Verify(repo => repo.GetUserByID(It.Is<int>(id => id == ID)), Times.Never);
         }
+        #endregion
     }
 }

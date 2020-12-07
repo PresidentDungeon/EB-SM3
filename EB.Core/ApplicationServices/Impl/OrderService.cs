@@ -4,13 +4,12 @@ using ProductShop.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace EB.Core.ApplicationServices.Impl
 {
     public class OrderService : IOrderService
     {
+        #region Dependency Injection
         private readonly IOrderRepository OrderRepository;
         private readonly IBeerRepository BeerRepository;
         private readonly ICustomerRepository CustomerRepository;
@@ -25,7 +24,9 @@ namespace EB.Core.ApplicationServices.Impl
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
             this.EmailHelper = emailHelper ?? throw new NullReferenceException("Email helper can't be null");
         }
+        #endregion
 
+        #region Create
         public Order AddOrder(Order order)
         {   //Check if order is null or customer exists
             if (order == null) { throw new ArgumentException("Attached order does not exist"); }
@@ -51,7 +52,9 @@ namespace EB.Core.ApplicationServices.Impl
             EmailHelper.SendVerificationEmail(addedOrder);
             return addedOrder;
         }
+        #endregion
 
+        #region Read
         public FilterList<Order> ReadAllOrders(Filter filter)
         {
             if (filter.CurrentPage < 0 || filter.ItemsPrPage < 0)
@@ -95,7 +98,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return OrderRepository.ReadOrderByIDUser(orderID, userID);
         }
+        #endregion
 
+        #region Update
         public Order UpdateOrderStatus(int orderID)
         {
             Order order = ReadOrderByID(orderID);
@@ -110,7 +115,9 @@ namespace EB.Core.ApplicationServices.Impl
             EmailHelper.SendConfirmationEmail(order);
             return OrderRepository.UpdateOrder(order);
         }
+        #endregion
 
+        #region Delete
         public Order DeleteOrder(int id)
         {
             if (id <= 0)
@@ -123,5 +130,6 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return OrderRepository.DeleteOrder(id);
         }
+        #endregion
     }
 }

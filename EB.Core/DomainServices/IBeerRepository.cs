@@ -1,7 +1,5 @@
-﻿using System;
-using EB.Core.Entities;
+﻿using EB.Core.Entities;
 using System.Collections.Generic;
-using System.Text;
 using ProductShop.Core.Entities;
 
 namespace EB.Core.DomainServices
@@ -19,7 +17,6 @@ namespace EB.Core.DomainServices
 
         //Update Data
         Beer UpdateBeerInRepo(Beer beerUpdate);
-
         void UpdateBeerRange(List<Beer> beers);
 
         //Delete Data

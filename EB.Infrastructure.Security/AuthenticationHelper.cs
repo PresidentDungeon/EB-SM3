@@ -9,12 +9,14 @@ namespace EB.Infrastructure.Security
 {
     public class AuthenticationHelper : IAuthenticationHelper
     {
+        #region Dependency Injection
         private byte[] SecretBytes;
 
         public AuthenticationHelper(byte[] secretBytes)
         {
             SecretBytes = secretBytes;
         }
+        #endregion
 
         public byte[] GenerateHash(string password, byte[] salt)
         {
@@ -45,9 +47,6 @@ namespace EB.Infrastructure.Security
                 }
             }
         }
-
-
-
 
         public string GenerateJWTToken(User user)
         {

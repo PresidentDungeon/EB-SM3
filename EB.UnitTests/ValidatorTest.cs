@@ -14,13 +14,13 @@ namespace EB.UnitTests
 {
     public class ValidatorTest
     {
-
         [Fact]
         public void BEValidator_IsOfTypeIValidator()
         {
             new BEValidator().Should().BeAssignableTo<IValidator>();
         }
 
+        #region AddBeer
         [Fact]
         public void AddBeer_InvalidBeerNull_ExceptArgumentException()
         {
@@ -170,7 +170,9 @@ namespace EB.UnitTests
             // act + assert
             validator.ValidateBeer(beer);
         }
+        #endregion
 
+        #region AddType
         [Fact]
         public void AddType_InvalidTypeNull_ExceptArgumentException()
         {
@@ -216,7 +218,9 @@ namespace EB.UnitTests
             // act + assert
             validator.ValidateType(type);
         }
+        #endregion
 
+        #region AddBrand
         [Fact]
         public void AddBrand_InvalidBrandNull_ExceptArgumentException()
         {
@@ -262,7 +266,9 @@ namespace EB.UnitTests
             // act + assert
             validator.ValidateBrand(brand);
         }
+        #endregion
 
+        #region AddCustomer
         [Fact]
         public void AddCustomer_InvalidCustomerNull_ExceptArgumentException()
         {
@@ -396,7 +402,9 @@ namespace EB.UnitTests
             // act + assert
             validator.ValidateCustomer(customer);
         }
+        #endregion
 
+        #region AddUser
         [Theory]
         [InlineData(null, "password", "user", "Username must be be between 8-24 characters")]                        // invalid username: null
         [InlineData("", "password", "user", "Username must be be between 8-24 characters")]                          // invalid username: ""
@@ -582,7 +590,9 @@ namespace EB.UnitTests
             // act + assert
             validator.ValidateUser(user);
         }
+        #endregion
 
+        #region AddOrder
         [Theory]
         [InlineData(1, 100)]
         [InlineData(2, 35)]
@@ -622,8 +632,8 @@ namespace EB.UnitTests
         }
 
         [Theory]
-        [InlineData(-1, 100, "Invalid ID")]               // invalid id: -1
-        [InlineData(int.MinValue, 35, "Invalid ID")]      // invalid id: -2147483648
+        [InlineData(-1, 100, "Invalid ID")]                                   // invalid id: -1
+        [InlineData(int.MinValue, 35, "Invalid ID")]                          // invalid id: -2147483648
         [InlineData(1, -1, "Price must be higher than zero")]                 // invalid AccumulatedPrice: -1
         [InlineData(2, int.MinValue, "Price must be higher than zero")]       // invalid AccumulatedPrice: -2147483648
         public void AddOrder_InvalidOrder_ExceptArgumentException(int id, double price, string expectedErrorMsg)
@@ -749,6 +759,6 @@ namespace EB.UnitTests
 
             Assert.Equal("Can not process order with no products", ex.Message);
         }
-
+        #endregion
     }
 }

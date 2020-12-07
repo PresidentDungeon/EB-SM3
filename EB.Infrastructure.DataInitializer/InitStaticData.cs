@@ -1,15 +1,12 @@
 ﻿using EB.Core.ApplicationServices;
 using EB.Core.DomainServices;
 using EB.Core.Entities;
-using EB.Core.Entities.Security;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EB.Infrastructure.DataInitializer
 {
     public class InitStaticData: IInitStaticData
     {
+        #region Dependency Injection
         private IBeerService BeerService;
         private IBeerTypeService BeerTypeService;
         private IBrandService BrandService;
@@ -22,9 +19,11 @@ namespace EB.Infrastructure.DataInitializer
             this.BrandService = brandService;
             this.UserService = UserService;
         }
+        #endregion
 
         public void InitData()
         {
+            #region BeerTypes
             BeerType hvedeøl = new BeerType {ID = 1, TypeName = "Hvedeøl" };
             BeerType steam = new BeerType {ID = 2, TypeName = "Steam" };
             BeerType stout = new BeerType {ID = 3, TypeName = "Stout" };
@@ -38,7 +37,9 @@ namespace EB.Infrastructure.DataInitializer
             BeerTypeService.CreateType(IPA);
             BeerTypeService.CreateType(pilsner);
             BeerTypeService.CreateType(saison);
+            #endregion
 
+            #region Brands
             Brand ølværket = new Brand {ID = 1, BrandName = "Ølværket" };
             Brand esbjergBryhus = new Brand {ID = 2, BrandName = "Esbjerg Bryghus" };
             Brand carlsberg = new Brand {ID = 3, BrandName = "Carlsberg" };
@@ -46,7 +47,9 @@ namespace EB.Infrastructure.DataInitializer
             BrandService.CreateBrand(ølværket);
             BrandService.CreateBrand(esbjergBryhus);
             BrandService.CreateBrand(carlsberg);
+            #endregion
 
+            #region Beers
             Beer borebisse = new Beer
             {
                 Name = "Borebisse",
@@ -107,10 +110,12 @@ namespace EB.Infrastructure.DataInitializer
             BeerService.CreateBeer(cargo);
             BeerService.CreateBeer(witch);
             BeerService.CreateBeer(witchGinger);
+            #endregion
 
+            #region Users
             UserService.AddUser(UserService.CreateUser("SeglerHans", "password", "Admin"));
             UserService.AddUser(UserService.CreateUser("Kutterjørgen", "lasagne28", "User"));
-
+            #endregion
         }
     }
 }

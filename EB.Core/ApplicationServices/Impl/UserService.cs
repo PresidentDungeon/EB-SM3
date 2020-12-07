@@ -8,6 +8,7 @@ namespace EB.Core.ApplicationServices.Impl
 {
     public class UserService: IUserService
     {
+        #region Dependency Injection
         private IUserRepository UserRepository;
         private IAuthenticationHelper AuthenticationHelper;
         private IValidator Validator;
@@ -18,8 +19,9 @@ namespace EB.Core.ApplicationServices.Impl
             this.AuthenticationHelper = authenticationHelper ?? throw new NullReferenceException("Authenticationhelper can't be null");
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
         }
+        #endregion
 
-
+        #region Login/Security
         public User Login(LoginInputModel inputModel)
         {
             if (inputModel == null || inputModel.Username == null || inputModel.Password == null)
@@ -51,13 +53,17 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return AuthenticationHelper.GenerateJWTToken(foundUser);
         }
+        #endregion
 
+        #region Validate
         public bool ValidateUser(string userName, string password, string userRole)
         {
            Validator.ValidateCreateUser(userName, password, userRole);
            return true;
         }
+        #endregion
 
+        #region Create
         public User CreateUser(string userName, string password, string userRole)
         {
             ValidateUser(userName, password, userRole);
@@ -86,7 +92,9 @@ namespace EB.Core.ApplicationServices.Impl
             }
             throw new ArgumentException("User is invalid");
         }
+        #endregion
 
+        #region Read
         public List<User> GetAllUsers()
         {
             return UserRepository.ReadUsers().ToList();
@@ -101,7 +109,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return UserRepository.GetUserByID(ID);
         }
-        
+        #endregion
+
+        #region Update
         public User UpdateUser(User user)
         {
             if (user == null)
@@ -132,7 +142,9 @@ namespace EB.Core.ApplicationServices.Impl
             user.Password = AuthenticationHelper.GenerateHash(updateModel.NewPassword, user.Salt);
             return UserRepository.UpdateUser(user);
         }
+        #endregion
 
+        #region Delete
         public User DeleteUser(int ID)
         {
             if (ID <= 0)
@@ -145,5 +157,6 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return UserRepository.DeleteUser(ID);
         }
+        #endregion
     }
 }

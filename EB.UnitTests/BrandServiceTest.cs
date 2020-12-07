@@ -15,6 +15,7 @@ namespace EB.UnitTests
 {
     public class BrandServiceTest
     {
+        #region Mock Setup
         private SortedDictionary<int, Brand> brandDatabase;
         private Mock<IBrandRepository> repoMock;
         private Mock<IValidator> validatorMock;
@@ -31,7 +32,9 @@ namespace EB.UnitTests
             repoMock.Setup(repo => repo.ReadBrandsFilterSearch(It.IsAny<Filter>())).Returns(() => { List<Brand> brand = brandDatabase.Values.ToList(); return new FilterList<Brand> { totalItems = brand.Count, List = brand }; });
             repoMock.Setup(repo => repo.ReadBrandById(It.IsAny<int>())).Returns<int>((id) => brandDatabase.ContainsKey(id) ? brandDatabase[id] : null);
         }
+        #endregion
 
+        #region BrandService Tests
         [Fact]
         public void CreateBrandService_BeerRepositoryAndValidatorIsNull_ExpectNullReferenceException()
         {
@@ -101,7 +104,9 @@ namespace EB.UnitTests
             service.ValidateBrand(brand);
             validatorMock.Verify(validator => validator.ValidateBrand(It.Is<Brand>(b => b == brand)), Times.Once);
         }
+        #endregion
 
+        #region Create Brand Tests
         [Theory]
         [InlineData(1, "Ølværket")]
         [InlineData(2, "Esbjerg Bryghus")]
@@ -149,7 +154,9 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.AddBrand(It.Is<Brand>(b => b == brand)), Times.Never);
             validatorMock.Verify(validator => validator.ValidateBrand(It.Is<Brand>(b => b == brand)), Times.Once);
         }
+        #endregion
 
+        #region Read Brand Tests
         [Fact]
         public void GetBrandById_BrandExists()
         {
@@ -293,7 +300,9 @@ namespace EB.UnitTests
             Assert.Equal(expectedSize, result.totalItems);
             repoMock.Verify(repo => repo.ReadBrandsFilterSearch(It.Is<Filter>(f => f == filter)), Times.Once);
         }
+        #endregion
 
+        #region Update Brand Tests
         [Theory]
         [InlineData(1, "Into Waves")]
         [InlineData(2, "Esbjerg Bryghus")]
@@ -380,7 +389,9 @@ namespace EB.UnitTests
             validatorMock.Verify(validator => validator.ValidateBrand(It.Is<Brand>(b => b == brand)), Times.Once);
             repoMock.Verify(repo => repo.UpdateBrandInRepo(It.Is<Brand>(b => b == brand)), Times.Never);
         }
+        #endregion
 
+        #region Delete Brand Tests
         [Fact]
         public void RemoveBrand_ValidExistingBrand()
         {
@@ -442,5 +453,6 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.DeleteBrandInRepo(It.Is<int>(id => id == ID)), Times.Never);
             repoMock.Verify(repo => repo.ReadBrandById(It.Is<int>(id => id == ID)), Times.Never);
         }
+        #endregion
     }
 }
