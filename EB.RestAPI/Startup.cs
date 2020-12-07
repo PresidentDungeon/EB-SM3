@@ -5,6 +5,7 @@ using EB.Core.ApplicationServices.Validators;
 using EB.Core.DomainServices;
 using EB.Infrastructure.Data;
 using EB.Infrastructure.DataInitializer;
+using EB.Infrastructure.Email;
 using EB.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +57,7 @@ namespace EB.RestAPI
             services.AddSingleton<IAuthenticationHelper>(new AuthenticationHelper(secretBytes));
             services.AddScoped<IInitStaticData, InitStaticData>();
             services.AddScoped<IValidator, BEValidator>();
+            services.AddScoped<IEmailHelper, EmailHelper>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
             {
@@ -120,11 +122,11 @@ namespace EB.RestAPI
                 if (env.IsDevelopment())
                 {
                     app.UseDeveloperExceptionPage();
-                    ctx.Database.EnsureDeleted();
+                    //ctx.Database.EnsureDeleted();
                     ctx.Database.EnsureCreated();
 
                     IInitStaticData dataInitilizer = scope.ServiceProvider.GetRequiredService<IInitStaticData>();
-                    dataInitilizer.InitData();
+                    //dataInitilizer.InitData();
                 }
                 else
                 {

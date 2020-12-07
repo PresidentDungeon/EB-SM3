@@ -18,6 +18,7 @@
     <ProjectReference Include="..\EB.Core\EB.Core.csproj" />
     <ProjectReference Include="..\EB.Infrastructure.DataInitializer\EB.Infrastructure.DataInitializer.csproj" />
     <ProjectReference Include="..\EB.Infrastructure.Data\EB.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\EB.Infrastructure.Email\EB.Infrastructure.Email.csproj" />
     <ProjectReference Include="..\EB.Infrastructure.Security\EB.Infrastructure.Security.csproj" />
   </ItemGroup>
 

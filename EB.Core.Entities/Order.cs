@@ -10,6 +10,7 @@ namespace EB.Core.Entities
         public DateTime OrderCreated { get; set; }
         public double AccumulatedPrice { get; set; }
         public Customer Customer { get; set; }
+        public bool OrderFinished { get; set; }
         public List<OrderBeer> OrderBeers { get; set; }
     }
 }
