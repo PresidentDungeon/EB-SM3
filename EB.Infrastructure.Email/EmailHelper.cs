@@ -19,7 +19,7 @@ namespace EB.Infrastructure.Email
                 productTable += item;
             }
             productTable += "</table>";
-            string bodyString = "<p>Tak for din ordre fra Esbjerg Bryghus. Du kan se status for din ordre ved <a href=\"http://localhost:4200/profile\">at logge ind på din konto<a/>.<br>Hvis du har spørgsmål til ordren, kan du kontakte os på EsbjergBryghusForsendelse@gmail.com</p>" +
+            string bodyString = "<p>Tak for din ordre fra Esbjerg Bryghus. Du kan se status for din ordre ved <a href=\"http://localhost:4200/login\">at logge ind på din konto<a/>.<br>Hvis du har spørgsmål til ordren, kan du kontakte os på EsbjergBryghusForsendelse@gmail.com</p>" +
                 "<h1>Din faktura for ordre #" + order.ID + 1000 + "</h1><br>" + productTable + "<br><h4>Total: " + order.AccumulatedPrice + "</h4>";
 
             var fromAddress = new MailAddress(Email, "Esbjerg Bryghus");
@@ -57,7 +57,7 @@ namespace EB.Infrastructure.Email
                 productTable += item;
             }
             productTable += "</table>";
-            string bodyString = "<p>Tak for din ordre fra Esbjerg Bryghus. Du kan se status for din ordre ved <a href=\"http://localhost:4200/profile\">at logge ind på din konto<a/>.<br>Hvis du har spørgsmål til ordren, kan du kontakte os på EsbjergBryghusForsendelse@gmail.com</p>" +
+            string bodyString = "<p>Tak for din ordre fra Esbjerg Bryghus. Du kan se status for din ordre ved <a href=\"http://localhost:4200/login\">at logge ind på din konto<a/>.<br>Hvis du har spørgsmål til ordren, kan du kontakte os på EsbjergBryghusForsendelse@gmail.com</p>" +
                 "<h1>Din faktura for ordre #" + order.ID + 1000 + "</h1><br>" + productTable + "<br><h4>Total: " + order.AccumulatedPrice + "</h4>";
 
             var fromAddress = new MailAddress(Email, "Esbjerg Bryghus");
