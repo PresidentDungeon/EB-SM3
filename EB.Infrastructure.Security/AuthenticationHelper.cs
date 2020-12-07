@@ -66,7 +66,7 @@ namespace EB.Infrastructure.Security
                               null, // audience - not needed (ValidateAudience = false)
                               claims,
                               DateTime.Now,               // notBefore
-                              DateTime.Now.AddMinutes(5)));  // expires
+                              DateTime.Now.AddDays(60)));  // expires
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
