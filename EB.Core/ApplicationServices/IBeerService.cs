@@ -6,7 +6,7 @@ namespace EB.Core.ApplicationServices
 {
     public interface IBeerService
     {
-      //Create
+        //Create
         Beer ValidateBeer(Beer beer);
         Beer CreateBeer(Beer beer);
 
@@ -15,10 +15,10 @@ namespace EB.Core.ApplicationServices
         FilterList<Beer> GetBeerFilterSearch(Filter filter);
         Beer GetBeerById(int id);
 
-      //Update
+        //Update
         Beer UpdateBeer(Beer beer);
 
-      //Delete
+        //Delete
         Beer DeleteBeer(int id);
     }
 }

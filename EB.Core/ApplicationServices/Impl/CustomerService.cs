@@ -1,13 +1,12 @@
 ﻿using EB.Core.DomainServices;
 using EB.Core.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EB.Core.ApplicationServices.Impl
 {
     public class CustomerService: ICustomerService
     {
+        #region Dependency Injection
         private ICustomerRepository CustomerRepository;
         private IValidator Validator;
 
@@ -16,13 +15,17 @@ namespace EB.Core.ApplicationServices.Impl
             this.CustomerRepository = customerRepository ?? throw new NullReferenceException("Repository can't be null");
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
         }
+        #endregion
 
+        #region Validate
         public Customer ValidateCustomer(Customer customer)
         {
             this.Validator.ValidateCustomer(customer);
             return customer;
         }
+        #endregion
 
+        #region Create
         public Customer CreateCustomer(Customer customer)
         {
             if (customer != null)
@@ -32,7 +35,9 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return null;
         }
+        #endregion
 
+        #region Read
         public Customer GetCustomerById(int id)
         {
             if (id <= 0)
@@ -42,7 +47,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return CustomerRepository.ReadCustomerById(id);
         }
+        #endregion
 
+        #region Update
         public Customer UpdateCustomer(Customer customer)
         {
             if (customer == null)
@@ -57,5 +64,6 @@ namespace EB.Core.ApplicationServices.Impl
 
             return CustomerRepository.UpdateCustomerInRepo(customer);
         }
+        #endregion
     }
 }

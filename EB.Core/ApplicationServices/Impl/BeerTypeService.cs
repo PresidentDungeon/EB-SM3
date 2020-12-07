@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace EB.Core.ApplicationServices.Impl
 {
     public class BeerTypeService : IBeerTypeService
     {
+        #region Dependency Injection
         private IBeerTypeRepository TypeRepository;
         private IValidator Validator;
 
@@ -19,13 +19,17 @@ namespace EB.Core.ApplicationServices.Impl
             this.TypeRepository = typeRepository ?? throw new NullReferenceException("Repository can't be null");
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
         }
+        #endregion
 
+        #region Validate
         public BeerType ValidateType(BeerType type)
         {
             this.Validator.ValidateType(type);
             return type;
         }
+        #endregion
 
+        #region Create
         public BeerType CreateType(BeerType type)
         {
             if (type != null)
@@ -35,7 +39,9 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return null;
         }
+        #endregion
 
+        #region Read
         public List<BeerType> GetAllTypes()
         {
             return TypeRepository.ReadTypes().ToList();
@@ -60,7 +66,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return TypeRepository.ReadTypeById(id);
         }
+        #endregion
 
+        #region Update
         public BeerType UpdateType(BeerType type)
         {
             if (type == null)
@@ -75,7 +83,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return TypeRepository.UpdateTypeInRepo(type);
         }
+        #endregion
 
+        #region Delete
         public BeerType DeleteType(int id)
         {
             if (id <= 0)
@@ -88,5 +98,6 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return TypeRepository.DeleteTypeInRepo(id);
         }
+        #endregion
     }
 }

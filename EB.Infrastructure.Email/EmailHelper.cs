@@ -1,10 +1,8 @@
 ﻿using EB.Core.DomainServices;
 using EB.Core.Entities;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 
 namespace EB.Infrastructure.Email
 {

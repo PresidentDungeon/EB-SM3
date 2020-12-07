@@ -15,6 +15,7 @@ namespace EB.UnitTests
 {
     public class BeerServiceTest
     {
+        #region Mock Setup
         private SortedDictionary<int, Beer> beerDatabase;
         private SortedDictionary<int, BeerType> typeDatabase;
         private SortedDictionary<int, Brand> brandDatabase;
@@ -47,7 +48,9 @@ namespace EB.UnitTests
             repoBrandMock.Setup(repo => repo.AddBrand(It.IsAny<Brand>())).Callback<Brand>(brand => brandDatabase.Add(brand.ID, brand));
             repoBrandMock.Setup(repo => repo.ReadBrandById(It.IsAny<int>())).Returns<int>((id) => brandDatabase.ContainsKey(id) ? brandDatabase[id] : null);
         }
+        #endregion
 
+        #region BeerService Tests
         [Fact]
         public void CreateBeerService_RepositoriesAndValidatorIsNull_ExpectNullReferenceException()
         {
@@ -141,7 +144,9 @@ namespace EB.UnitTests
             service.ValidateBeer(beer);
             validatorMock.Verify(validator => validator.ValidateBeer(It.Is<Beer>(b => b == beer)), Times.Once);
         }
+        #endregion
 
+        #region Create Beer Tests
         [Theory]
         [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, 50, "x.png")]
         [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, 55, "x.jpg")]
@@ -300,8 +305,9 @@ namespace EB.UnitTests
             repoBrandMock.Verify(repo => repo.ReadBrandById(It.Is<int>(ID => ID == brand.ID)), Times.Once);
             repoMock.Verify(repo => repo.AddBeer(It.Is<Beer>(b => b == beer)), Times.Never);
         }
+        #endregion
 
-
+        #region Read Beer tests
         [Fact]
         public void GetBeerById_BeerExists()
         {
@@ -445,7 +451,9 @@ namespace EB.UnitTests
             Assert.Equal(expectedSize, result.totalItems);
             repoMock.Verify(repo => repo.ReadBeersFilterSearch(It.Is<Filter>(f => f == filter)), Times.Once);
         }
+        #endregion
 
+        #region Update Beer Tests
         [Theory]
         [InlineData(1, "SKIPPER LAS", "Kobberfarvet", 56, 6.6, 2.2, 1.1, 0, "x.png")]
         [InlineData(2, "FIMUSBRYG", "Ravfarvet", 65, 5.1, 5.3, 2.1, 20, "x.jpg")]
@@ -663,7 +671,9 @@ namespace EB.UnitTests
             repoBrandMock.Verify(repo => repo.ReadBrandById(It.Is<int>(ID => ID == brand.ID)), Times.Once);
             repoMock.Verify(repo => repo.UpdateBeerInRepo(It.Is<Beer>(b => b == beer)), Times.Never);
         }
+        #endregion
 
+        #region Delete Beer Tests
         [Fact]
         public void RemoveBeer_ValidExistingBeer()
         {
@@ -747,5 +757,6 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.DeleteBeerInRepo(It.Is<int>(id => id == ID)), Times.Never);
             repoMock.Verify(repo => repo.ReadBeerById(It.Is<int>(id => id == ID)), Times.Never);
         }
+        #endregion
     }
 }

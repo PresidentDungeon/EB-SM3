@@ -199,10 +199,6 @@ namespace EB.Core.ApplicationServices.Validators
                 throw new ArgumentException("Can not process order with no products");
             }
 
-
-
-
-
         }
     }
 }

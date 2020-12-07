@@ -1,14 +1,12 @@
 ﻿using EB.Core.Entities;
 using ProductShop.Core.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EB.Core.ApplicationServices
 {
     public interface IBeerTypeService
     {
-       //Create
+        //Create
         BeerType ValidateType(BeerType type);
         BeerType CreateType(BeerType type);
 

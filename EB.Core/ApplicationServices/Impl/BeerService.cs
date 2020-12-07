@@ -10,6 +10,7 @@ namespace EB.Core.ApplicationServices.Impl
 {
     public class BeerService : IBeerService
     {
+        #region Dependency Injection
         private IBeerRepository BeerRepository;
         private IBrandRepository BrandRepository;
         private IBeerTypeRepository TypeRepository;
@@ -22,13 +23,17 @@ namespace EB.Core.ApplicationServices.Impl
             this.TypeRepository = typeRepository ?? throw new NullReferenceException("Repository can't be null");
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
         }
+        #endregion
 
+        #region Validate
         public Beer ValidateBeer(Beer beer)
         {
             this.Validator.ValidateBeer(beer);
             return beer;
         }
+        #endregion
 
+        #region Create
         public Beer CreateBeer(Beer beer)
         {
             if (beer != null)
@@ -47,7 +52,9 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return null;
         }
+        #endregion
 
+        #region Read
         public List<Beer> GetAllBeer()
         {
             return BeerRepository.ReadBeers().ToList();
@@ -72,7 +79,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return BeerRepository.ReadBeerById(id);
         }
+        #endregion
 
+        #region Update
         public Beer UpdateBeer(Beer beer)
         {
             if (beer == null)
@@ -95,7 +104,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return BeerRepository.UpdateBeerInRepo(beer);
         }
+        #endregion
 
+        #region Delete
         public Beer DeleteBeer(int id)
         {
             if (id <= 0)
@@ -108,5 +119,6 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return BeerRepository.DeleteBeerInRepo(id);
         }
+        #endregion
     }
 }

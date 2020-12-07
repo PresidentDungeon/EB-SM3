@@ -2,23 +2,23 @@
 using EB.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using ProductShop.Core.Entities;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace EB.Infrastructure.Data
 {
     public class OrderRepository : IOrderRepository
     {
+        #region Dependency Injection
         private EBContext ctx;
 
         public OrderRepository(EBContext ctx)
         {
             this.ctx = ctx;
         }
+        #endregion
 
+        #region Create Data
         public Order AddOrder(Order order)
         {
             ctx.Attach(order).State = EntityState.Added;
@@ -26,7 +26,9 @@ namespace EB.Infrastructure.Data
 
             return ReadOrderByID(order.ID);
         }
+        #endregion
 
+        #region Read Data
         public FilterList<Order> ReadAllOrders(Filter filter)
         {
             IQueryable<Order> orders = ctx.Orders.Include(order => order.Customer).AsQueryable();
@@ -80,7 +82,9 @@ namespace EB.Infrastructure.Data
         {
             return ctx.Orders.Include(o => o.OrderBeers).ThenInclude(ob => ob.Beer).Where(o => o.Customer.ID == userID).FirstOrDefault(x => x.ID == orderID);
         }
+        #endregion
 
+        #region Update Data
         public Order UpdateOrder(Order order)
         {
             ctx.Attach(order).State = EntityState.Modified;
@@ -89,13 +93,15 @@ namespace EB.Infrastructure.Data
 
             return ReadOrderByID(order.ID);
         }
+        #endregion
 
+        #region Delete Data
         public Order DeleteOrder(int id)
         {
             var deletedOrder = ctx.Orders.Remove(ReadOrderByID(id));
             ctx.SaveChanges();
             return deletedOrder.Entity;
         }
-
+        #endregion
     }
 }

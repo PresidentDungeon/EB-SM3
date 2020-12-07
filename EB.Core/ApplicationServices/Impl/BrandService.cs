@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace EB.Core.ApplicationServices.Impl
 {
     public class BrandService : IBrandService
     {
+        #region Dependency Injection
         private IBrandRepository BrandRepository;
         private IValidator Validator;
 
@@ -19,13 +19,17 @@ namespace EB.Core.ApplicationServices.Impl
             this.BrandRepository = brandRepository ?? throw new NullReferenceException("Repository can't be null");
             this.Validator = validator ?? throw new NullReferenceException("Validator can't be null");
         }
+        #endregion
 
+        #region Validate
         public Brand ValidateBrand(Brand brand)
         {
             this.Validator.ValidateBrand(brand);
             return brand;
         }
+        #endregion
 
+        #region Create
         public Brand CreateBrand(Brand brand)
         {
             if (brand != null)
@@ -35,7 +39,9 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return null;
         }
+        #endregion
 
+        #region Read
         public List<Brand> GetAllBrands()
         {
             return BrandRepository.ReadBrands().ToList();
@@ -60,7 +66,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return BrandRepository.ReadBrandById(id);
         }
+        #endregion
 
+        #region Update
         public Brand UpdateBrand(Brand brand)
         {
             if (brand == null)
@@ -75,7 +83,9 @@ namespace EB.Core.ApplicationServices.Impl
 
             return BrandRepository.UpdateBrandInRepo(brand);
         }
+        #endregion
 
+        #region Delete
         public Brand DeleteBrand(int id)
         {
             if (id <= 0)
@@ -88,5 +98,6 @@ namespace EB.Core.ApplicationServices.Impl
             }
             return BrandRepository.DeleteBrandInRepo(id);
         }
+        #endregion
     }
 }

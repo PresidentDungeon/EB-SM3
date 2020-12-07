@@ -15,6 +15,7 @@ namespace EB.UnitTests
 {
     public class CustomerServiceTest
     {
+        #region Mock Setup
         private SortedDictionary<int, Customer> customerDatabase;
         private Mock<ICustomerRepository> repoMock;
         private Mock<IValidator> validatorMock;
@@ -28,7 +29,9 @@ namespace EB.UnitTests
             repoMock.Setup(repo => repo.UpdateCustomerInRepo(It.IsAny<Customer>())).Callback<Customer>(customer => customerDatabase[customer.ID] = customer);
             repoMock.Setup(repo => repo.ReadCustomerById(It.IsAny<int>())).Returns<int>((id) => customerDatabase.ContainsKey(id) ? customerDatabase[id] : null);
         }
+        #endregion
 
+        #region CustomerService Tests
         [Fact]
         public void CreateCustomerService_CustomerRepositoryAndValidatorIsNull_ExpectNullReferenceException()
         {
@@ -98,7 +101,9 @@ namespace EB.UnitTests
             service.ValidateCustomer(customer);
             validatorMock.Verify(validator => validator.ValidateCustomer(It.Is<Customer>(c => c == customer)), Times.Once);
         }
+        #endregion
 
+        #region Create Customer Tests
         [Theory]
         [InlineData(1, "Århus")]
         [InlineData(2, "Randers")]
@@ -146,7 +151,9 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.AddCustomer(It.Is<Customer>(c => c == customer)), Times.Never);
             validatorMock.Verify(validator => validator.ValidateCustomer(It.Is<Customer>(c => c == customer)), Times.Once);
         }
+        #endregion
 
+        #region Read Customer Tests
         [Fact]
         public void GetCustomerById_CustomerExists()
         {
@@ -198,7 +205,9 @@ namespace EB.UnitTests
             Assert.Equal("Incorrect ID entered", ex.Message);
             repoMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == ID)), Times.Never);
         }
+        #endregion
 
+        #region Update Customer Tests
         [Theory]
         [InlineData(1, "København")]
         [InlineData(2, "Odense")]
@@ -285,5 +294,6 @@ namespace EB.UnitTests
             validatorMock.Verify(validator => validator.ValidateCustomer(It.Is<Customer>(c => c == customer)), Times.Once);
             repoMock.Verify(repo => repo.UpdateCustomerInRepo(It.Is<Customer>(c => c == customer)), Times.Never);
         }
+        #endregion
     }
 }
