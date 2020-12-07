@@ -15,6 +15,7 @@ namespace EB.UnitTests
 {
     public class BeerTypeServiceTest
     {
+        #region Mock Setup
         private SortedDictionary<int, BeerType> typeDatabase;
         private Mock<IBeerTypeRepository> repoMock;
         private Mock<IValidator> validatorMock;
@@ -31,7 +32,9 @@ namespace EB.UnitTests
             repoMock.Setup(repo => repo.ReadTypesFilterSearch(It.IsAny<Filter>())).Returns(() => { List<BeerType> type = typeDatabase.Values.ToList(); return new FilterList<BeerType> { totalItems = type.Count, List = type }; });
             repoMock.Setup(repo => repo.ReadTypeById(It.IsAny<int>())).Returns<int>((id) => typeDatabase.ContainsKey(id) ? typeDatabase[id] : null);
         }
+        #endregion
 
+        #region BeerTypeService Tests
         [Fact]
         public void CreateBeerTypeService_BeerTypeRepositoryAndValidatorIsNull_ExpectNullReferenceException()
         {
@@ -101,7 +104,9 @@ namespace EB.UnitTests
             service.ValidateType(type);
             validatorMock.Verify(validator => validator.ValidateType(It.Is<BeerType>(t => t == type)), Times.Once);
         }
+        #endregion
 
+        #region Create BeerType Tests
         [Theory]
         [InlineData(1, "IPA")]
         [InlineData(2, "Stout")]
@@ -149,7 +154,9 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.AddType(It.Is<BeerType>(t => t == type)), Times.Never);
             validatorMock.Verify(validator => validator.ValidateType(It.Is<BeerType>(t => t == type)), Times.Once);
         }
+        #endregion
 
+        #region Read BeerType Tests
         [Fact]
         public void GetBeerTypeById_BeerTypeExists()
         {
@@ -292,7 +299,9 @@ namespace EB.UnitTests
             Assert.Equal(expectedSize, result.totalItems);
             repoMock.Verify(repo => repo.ReadTypesFilterSearch(It.Is<Filter>(f => f == filter)), Times.Once);
         }
+        #endregion
 
+        #region Update BeerType Tests
         [Theory]
         [InlineData(1, "IPA")]
         [InlineData(2, "Stout")]
@@ -379,7 +388,9 @@ namespace EB.UnitTests
             validatorMock.Verify(validator => validator.ValidateType(It.Is<BeerType>(t => t == type)), Times.Once);
             repoMock.Verify(repo => repo.UpdateTypeInRepo(It.Is<BeerType>(t => t == type)), Times.Never);
         }
+        #endregion
 
+        #region Delete BeerType Tests
         [Fact]
         public void RemoveBeerType_ValidExistingBeerType()
         {
@@ -441,5 +452,6 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.DeleteTypeInRepo(It.Is<int>(id => id == ID)), Times.Never);
             repoMock.Verify(repo => repo.ReadTypeById(It.Is<int>(id => id == ID)), Times.Never);
         }
+        #endregion
     }
 }

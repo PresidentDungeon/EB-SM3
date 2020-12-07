@@ -11,20 +11,25 @@ namespace EB.Infrastructure.Data
 {
     public class UserRepository: IUserRepository
     {
+        #region Dependency Injection
         private EBContext ctx;
 
         public UserRepository(EBContext ctx)
         {
             this.ctx = ctx;
         }
+        #endregion
 
+        #region Create Data
         public User AddUser(User user)
         {
             ctx.Attach(user).State = EntityState.Added;
             ctx.SaveChanges();
             return user;
         }
+        #endregion
 
+        #region Read Data
         public IEnumerable<User> ReadUsers()
         {
             return ctx.Users.Include(u => u.Customer).AsEnumerable();
@@ -34,7 +39,9 @@ namespace EB.Infrastructure.Data
         {
             return ctx.Users.Include(u => u.Customer).FirstOrDefault(x => x.ID == ID);
         }
+        #endregion
 
+        #region Update Data
         public User UpdateUser(User user)
         {
             ctx.Attach(user).State = EntityState.Modified;
@@ -43,12 +50,15 @@ namespace EB.Infrastructure.Data
 
             return GetUserByID(user.ID);
         }
+        #endregion
 
+        #region Delete Data
         public User DeleteUser(int ID)
         {
             var deletedUser = ctx.Users.Remove(GetUserByID(ID));
             ctx.SaveChanges();
             return deletedUser.Entity;
         }
+        #endregion
     }
 }

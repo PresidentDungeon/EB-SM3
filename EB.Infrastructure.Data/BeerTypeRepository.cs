@@ -2,22 +2,23 @@
 using EB.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using ProductShop.Core.Entities;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace EB.Infrastructure.Data
 {
     public class BeerTypeRepository : IBeerTypeRepository
     {
+        #region Dependency Injection
         private EBContext ctx;
         public BeerTypeRepository(EBContext ctx)
         {
             this.ctx = ctx;
         }
+        #endregion
 
+        #region Create Data
         public BeerType AddType(BeerType type)
         {
             ctx.Attach(type).State = EntityState.Added;
@@ -25,7 +26,9 @@ namespace EB.Infrastructure.Data
 
             return type;
         }
+        #endregion
 
+        #region Read Data
         public IEnumerable<BeerType> ReadTypes()
         {
             return ctx.Types.AsEnumerable();
@@ -69,28 +72,24 @@ namespace EB.Infrastructure.Data
         {
             return ctx.Types.FirstOrDefault(x => x.ID == id);
         }
+        #endregion
 
+        #region Update Data
         public BeerType UpdateTypeInRepo(BeerType typeUpdate)
         {
             ctx.Attach(typeUpdate).State = EntityState.Modified;
             ctx.SaveChanges();
             return typeUpdate;
         }
+        #endregion
 
-
+        #region Delete Data
         public BeerType DeleteTypeInRepo(int id)
         {
             var removedType = ctx.Types.Remove(ReadTypeById(id));
             ctx.SaveChanges();
             return removedType.Entity;
         }
-
-
-
-
-
-
-
-
+        #endregion
     }
 }

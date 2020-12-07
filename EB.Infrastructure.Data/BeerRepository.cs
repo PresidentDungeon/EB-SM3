@@ -6,19 +6,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace EB.Infrastructure.Data
 {
     public class BeerRepository : IBeerRepository
     {
+        #region Dependency Injection
         private EBContext ctx;
 
         public BeerRepository(EBContext ctx)
         {
             this.ctx = ctx;
         }
+        #endregion
 
+        #region Create Data
         public Beer AddBeer(Beer beer)
         {
             ctx.Attach(beer).State = EntityState.Added;
@@ -26,7 +28,9 @@ namespace EB.Infrastructure.Data
 
             return beer;
         }
+        #endregion
 
+        #region Read Data
         public IEnumerable<Beer> ReadBeers()
         {
             return ctx.Beers.Include(b => b.Type).Include(b => b.Brand).AsEnumerable();
@@ -84,7 +88,9 @@ namespace EB.Infrastructure.Data
         {
             return ctx.Beers.FirstOrDefault(x => x.ID == id);
         }
+        #endregion
 
+        #region Update Data
         public Beer UpdateBeerInRepo(Beer beerUpdate)
         {
             ctx.Attach(beerUpdate).State = EntityState.Modified;
@@ -105,21 +111,15 @@ namespace EB.Infrastructure.Data
                 ctx.SaveChanges();
             }
         }
+        #endregion
 
-
+        #region Delete Data
         public Beer DeleteBeerInRepo(int id)
         {
             var removedBeer = ctx.Beers.Remove(ReadBeerById(id));
             ctx.SaveChanges();
             return removedBeer.Entity;
         }
-
-
-
-
-
-
-
-
+        #endregion
     }
 }

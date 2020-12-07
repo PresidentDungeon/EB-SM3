@@ -17,6 +17,7 @@ namespace EB.UnitTests
 {
     public class OrderServiceTest
     {
+        #region Mock Setup
         private readonly SortedDictionary<int, Order> orderDatabase;
         private readonly SortedDictionary<int, Customer> customerDatabase;
         private readonly SortedDictionary<int, Beer> beerDatabase;
@@ -48,7 +49,9 @@ namespace EB.UnitTests
             customerMock.Setup(repo => repo.ReadCustomerById(It.IsAny<int>())).Returns<int>((id) => customerDatabase.ContainsKey(id) ? customerDatabase[id] : null);
             beerMock.Setup(repo => repo.ReadSimpleBeerByID(It.IsAny<int>())).Returns<int>((id) => beerDatabase.ContainsKey(id) ? beerDatabase[id] : null);
         }
+        #endregion
 
+        #region OrderService Tests
         [Fact]
         public void CreateOrderService_RepositoriesAndValidatorsIsNull_ExpectNullReferenceException()
         {
@@ -130,8 +133,9 @@ namespace EB.UnitTests
             // act + assert
             new OrderService(repoMock.Object, beerMock.Object, customerMock.Object, validatorMock.Object, emailMock.Object).Should().BeAssignableTo<IOrderService>();
         }
+        #endregion
 
-
+        #region Create Order Tests
         [Fact]
         public void AddOrder()
         {
@@ -414,7 +418,9 @@ namespace EB.UnitTests
             customerMock.Verify(repo => repo.ReadCustomerById(It.Is<int>(id => id == customer.ID)), Times.Once);
             validatorMock.Verify(validator => validator.ValidateOrder(It.Is<Order>(o => o == order)), Times.Once);
         }
+        #endregion
 
+        #region Read Order Tests
         [Fact]
         public void GetOrderById_OrderExists()
         {
@@ -625,9 +631,9 @@ namespace EB.UnitTests
             Assert.Equal("Page or items per page must be above zero", ex.Message);
             repoMock.Verify(repo => repo.ReadAllOrdersByCustomer(It.Is<int>(ID => ID == customer2.ID), It.Is<Filter>(f => f == filter)), Times.Never);
         }
+        #endregion
 
-
-
+        #region Update Order Tests
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -719,7 +725,9 @@ namespace EB.UnitTests
             emailMock.Verify(emailMock => emailMock.SendConfirmationEmail(It.Is<Order>(or => or == order)), Times.Never);
             repoMock.Verify(repo => repo.UpdateOrder(It.Is<Order>(o => o == order)), Times.Never);
         }
+        #endregion
 
+        #region Delete Order Tests
         [Fact]
         public void RemoveOrder_ValidExistingOrder()
         {
@@ -779,5 +787,6 @@ namespace EB.UnitTests
             repoMock.Verify(repo => repo.ReadOrderByID(It.Is<int>(id => id == ID)), Times.Never);
             repoMock.Verify(repo => repo.DeleteOrder(It.Is<int>(id => id == ID)), Times.Never);
         }
+        #endregion
     }
 }
