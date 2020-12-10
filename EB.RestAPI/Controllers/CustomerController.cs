@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EB.RestAPI.Controllers
@@ -23,6 +24,7 @@ namespace EB.RestAPI.Controllers
 
         #region Create
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(Customer), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
         public ActionResult<Customer> CreateCustomer([FromBody] Customer customer)
@@ -47,6 +49,7 @@ namespace EB.RestAPI.Controllers
 
         #region Read
         [HttpGet("{ID}")]
+        [Authorize]
         [ProducesResponseType(typeof(Customer), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<Customer> GetByID(int ID)
@@ -69,6 +72,7 @@ namespace EB.RestAPI.Controllers
 
         #region Update
         [HttpPut("{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(Customer), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<Customer> UpdateByID(int id, [FromBody] Customer customer)

@@ -2,6 +2,7 @@
 using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EB.RestAPI.Controllers
@@ -46,6 +47,7 @@ namespace EB.RestAPI.Controllers
 
         #region Read
         [HttpGet("{ID}")]
+        [Authorize]
         [ProducesResponseType(typeof(User), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<User> GetByID(int ID)
@@ -68,6 +70,7 @@ namespace EB.RestAPI.Controllers
 
         #region Update
         [HttpPut("{ID}")]
+        [Authorize]
         [ProducesResponseType(typeof(User), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<User> UpdateByID(int id, [FromBody] User user)
@@ -89,6 +92,7 @@ namespace EB.RestAPI.Controllers
         }
 
         [HttpPut("password/{ID}")]
+        [Authorize]
         [ProducesResponseType(typeof(User), 202)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -109,6 +113,7 @@ namespace EB.RestAPI.Controllers
 
         #region Delete
         [HttpDelete("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(User), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<User> DeleteByID(int id)

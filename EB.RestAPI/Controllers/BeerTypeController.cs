@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EB.RestAPI.Controllers
@@ -22,6 +23,7 @@ namespace EB.RestAPI.Controllers
 
         #region Create
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(BeerType), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
         public ActionResult<BeerType> CreateBeerType([FromBody] BeerType beerType)
@@ -65,6 +67,7 @@ namespace EB.RestAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(BeerType), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<BeerType> GetByID(int ID)
@@ -86,8 +89,8 @@ namespace EB.RestAPI.Controllers
         #endregion
 
         #region Update
-        // PUT api/<BeerTypeController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(BeerType), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<BeerType> UpdateByID(int id, [FromBody] BeerType type)
@@ -111,6 +114,7 @@ namespace EB.RestAPI.Controllers
 
         #region Delete
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(BeerType), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<BeerType> DeleteByID(int id)
