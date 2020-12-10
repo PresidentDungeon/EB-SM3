@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EB.RestAPI.Controllers
@@ -24,6 +25,7 @@ namespace EB.RestAPI.Controllers
 
         #region Create
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Brand), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
         public ActionResult<Brand> CreateBrand([FromBody] Brand brand)
@@ -48,6 +50,7 @@ namespace EB.RestAPI.Controllers
 
         #region Read
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(IEnumerable<Brand>), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<IEnumerable<Brand>> Get([FromQuery] Filter filter)
@@ -67,6 +70,7 @@ namespace EB.RestAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Brand), 200)]
         [ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<Brand> GetByID(int ID)
@@ -89,6 +93,7 @@ namespace EB.RestAPI.Controllers
 
         #region Update
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Brand), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<Brand> UpdateByID(int id, [FromBody] Brand brand)
@@ -112,6 +117,7 @@ namespace EB.RestAPI.Controllers
 
         #region Delete
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Brand), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<Brand> DeleteByID(int id)
