@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductShop.Core.Entities;
 
@@ -23,6 +24,7 @@ namespace EB.RestAPI.Controllers
 
         #region Create
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Beer), 201)]
         [ProducesResponseType(400)][ProducesResponseType(500)]
         public ActionResult<Beer> CreateBeer([FromBody] Beer beer)
@@ -88,6 +90,7 @@ namespace EB.RestAPI.Controllers
 
         #region Update
         [HttpPut("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Beer), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<Beer> UpdateByID(int id, [FromBody] Beer beer)
@@ -111,6 +114,7 @@ namespace EB.RestAPI.Controllers
 
         #region Delete
         [HttpDelete("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Beer), 202)]
         [ProducesResponseType(400)][ProducesResponseType(404)][ProducesResponseType(500)]
         public ActionResult<Beer> DeleteByID(int id)

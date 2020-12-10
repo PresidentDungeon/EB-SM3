@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EB.Core.ApplicationServices;
 using EB.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductShop.Core.Entities;
 
@@ -23,6 +24,7 @@ namespace EB.RestAPI.Controllers
 
         #region Create
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(Order), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -52,6 +54,7 @@ namespace EB.RestAPI.Controllers
 
         #region Read
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(FilterList<Order>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -72,6 +75,7 @@ namespace EB.RestAPI.Controllers
         }
 
         [HttpGet("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Order), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -93,6 +97,7 @@ namespace EB.RestAPI.Controllers
         }
 
         [HttpGet("{OrderID}/{UserID}")]
+        [Authorize]
         [ProducesResponseType(typeof(Order), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -114,6 +119,7 @@ namespace EB.RestAPI.Controllers
         }
 
         [HttpGet("customer-{ID}")]
+        [Authorize]
         [ProducesResponseType(typeof(IEnumerable<Order>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -136,6 +142,7 @@ namespace EB.RestAPI.Controllers
 
         #region Update
         [HttpPut("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Order), 202)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -164,6 +171,7 @@ namespace EB.RestAPI.Controllers
 
         #region Delete
         [HttpDelete("{ID}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(Order), 202)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
