@@ -85,9 +85,12 @@ namespace EB.RestAPI
                     ServiceLifetime.Transient);
             }
 
-            services.AddCors(options => options.AddDefaultPolicy(
-                builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }
-                ));
+            services.AddCors(options => 
+                
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder
+                        .WithOrigins("https://eb-sm3-web.web.app").AllowAnyMethod().AllowAnyHeader();
+                    ));
 
             services.AddSwaggerGen((options) => {
                 options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
