@@ -85,12 +85,26 @@ namespace EB.RestAPI
                     ServiceLifetime.Transient);
             }
 
-            services.AddCors(options => 
-                options.AddPolicy("AllowSpecificOrigin",
-                    builder => { builder
-                        .WithOrigins("https://eb-sm3-web.web.app").AllowAnyMethod().AllowAnyHeader(); }
-                )
-            );
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("eb-sm3.azurewebsites.net",
+                                            "https://eb-sm3-web.firebaseapp.com",
+                                            "https://eb-sm3-web.firebaseapp.com/").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                    });
+            });
+
+            //services.AddCors(options => 
+            //    options.AddDefaultPolicy(
+            //        builder => { builder
+            //            .WithOrigins("https://eb-sm3-web.firebaseapp.com/")
+            //            .AllowAnyMethod()
+            //            .AllowAnyHeader()
+            //            .AllowCredentials(); }
+            //    )
+            //);
 
             services.AddSwaggerGen((options) => {
                 options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo

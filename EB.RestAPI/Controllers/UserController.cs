@@ -28,7 +28,7 @@ namespace EB.RestAPI.Controllers
         {
             try
             {
-                User createdUser = UserService.CreateUser(model.Username, model.Password, "user");
+                User createdUser = UserService.CreateUser(model.Username, model.Password, "User");
                 User addedUser = UserService.AddUser(createdUser);
 
                 if (addedUser == null)
